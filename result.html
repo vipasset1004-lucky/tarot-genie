@@ -10,146 +10,220 @@
 </head>
 <body class="result-page">
 
-  <nav class="nav scrolled" id="nav">
-    <div class="nav__inner">
-      <a href="/" class="nav__logo">
-        <span class="nav__logo-text">🔮 팔자연구소</span>
-        <span class="nav__logo-sub">&nbsp;타로 지니</span>
-      </a>
-      <a href="/" class="btn btn--outline btn--sm">홈으로</a>
-    </div>
-  </nav>
+<nav class="nav scrolled">
+  <div class="nav__inner">
+    <a href="index.html" class="nav__logo">
+      <span class="nav__logo-text">🔮 팔자연구소</span>
+      <span class="nav__logo-sub">&nbsp;타로 지니</span>
+    </a>
+    <a href="index.html" class="btn btn--outline btn--sm">홈으로</a>
+  </div>
+</nav>
 
-  <!-- Loading State -->
-  <div id="loadingState" class="result-container">
-    <div class="loading">
-      <div class="loading__orb">🔮</div>
-      <h3>카드를 해석하고 있습니다</h3>
-      <p>당신만을 위한 리딩을 준비하고 있어요...</p>
-      <div class="loading__dots">
-        <span></span><span></span><span></span>
-      </div>
-    </div>
+<!-- Loading -->
+<div id="loadingState" class="result-container">
+  <div class="loading">
+    <div class="loading__orb">🔮</div>
+    <h3>카드를 해석하고 있습니다</h3>
+    <p>당신만을 위한 리딩을 준비하고 있어요...</p>
+    <div class="loading__dots"><span></span><span></span><span></span></div>
+  </div>
+</div>
+
+<!-- Result -->
+<div id="resultState" class="result-container" style="display:none;">
+  <div class="result-header">
+    <span class="big-orb">🔮</span>
+    <h1>당신의 <span>타로 리딩</span> 결과</h1>
+    <p id="resultSubtitle"></p>
   </div>
 
-  <!-- Result State -->
-  <div id="resultState" class="result-container" style="display:none;">
+  <div class="result-cards-row" id="resultCards"></div>
 
-    <div class="result-header">
-      <span class="big-orb">🔮</span>
-      <h1>당신의 <span>타로 리딩</span> 결과</h1>
-      <p id="resultSubtitle">리딩이 완료되었습니다. 이메일로도 발송해드렸습니다.</p>
-    </div>
+  <div class="reading-content" id="readingContent"></div>
 
-    <!-- Selected Cards -->
-    <div class="result-cards-row" id="resultCards"></div>
-
-    <!-- Reading Content -->
-    <div class="reading-content" id="readingContent">
-      <div class="reading-section">
-        <h3>🔮 종합 리딩</h3>
-        <p id="readingText">리딩 결과를 불러오는 중...</p>
-      </div>
-    </div>
-
-    <div class="result-actions">
-      <button class="btn btn--primary" onclick="window.print()">🖨️ 인쇄하기</button>
-      <a href="/" class="btn btn--outline">다시 리딩받기</a>
-    </div>
-
+  <div class="result-actions">
+    <button class="btn btn--primary" onclick="window.print()">🖨️ 인쇄하기</button>
+    <a href="index.html" class="btn btn--outline">다시 리딩받기</a>
   </div>
+</div>
 
-  <!-- Error State -->
-  <div id="errorState" class="result-container" style="display:none;">
-    <div class="loading">
-      <div class="loading__orb">😔</div>
-      <h3>리딩 결과를 불러오지 못했습니다</h3>
-      <p id="errorMsg">잠시 후 다시 시도해주세요.</p>
-      <a href="/" class="btn btn--primary" style="margin-top:16px;">홈으로 돌아가기</a>
-    </div>
+<!-- Error -->
+<div id="errorState" class="result-container" style="display:none;">
+  <div class="loading">
+    <div class="loading__orb" style="font-size:64px;">😔</div>
+    <h3>결과를 불러오지 못했습니다</h3>
+    <p id="errorMsg"></p>
+    <a href="index.html" class="btn btn--primary" style="margin-top:20px;">홈으로 돌아가기</a>
   </div>
+</div>
 
-  <script src="js/cards.js"></script>
-  <script>
-  (async function() {
-    const params = new URLSearchParams(window.location.search);
-    const paymentKey = params.get('paymentKey');
-    const orderId    = params.get('orderId');
-    const amount     = params.get('amount');
-    const ctx        = JSON.parse(sessionStorage.getItem('tarot_reading_ctx') || 'null');
+<script src="js/cards.js"></script>
+<script>
+const POSITIONS = {
+  daily:         ['오늘의 메시지'],
+  three:         ['과거', '현재', '미래'],
+  yearly:        ['상반기 흐름', '하반기 흐름', '올해의 핵심'],
+  comprehensive: ['연애/감정', '직업/목표', '재물/금전', '건강/에너지', '종합 조언'],
+  celtic:        ['현재 상황','도전/장애물','잠재의식','과거','가능한 미래','단기 미래','나의 태도','외부 영향','희망/두려움','최종 결과'],
+  saju:          ['본질적 에너지','현재 운세','사주 보완','관계의 흐름','재물의 흐름','건강/활력','올해 방향','내년 준비','장기 비전','핵심 조언']
+};
 
-    if (!paymentKey || !orderId || !ctx) {
-      showError('결제 정보를 찾을 수 없습니다.');
-      return;
-    }
+const INTROS = [
+  '카드들이 당신을 위해 이야기를 꺼냅니다.',
+  '우주의 에너지가 이 순간 당신에게 전하는 메시지입니다.',
+  '당신이 고른 카드들은 결코 우연이 아닙니다.',
+  '타로는 이미 당신 안에 있는 답을 비춰줍니다.',
+];
 
-    try {
-      const res = await fetch('/api/payment/confirm', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          paymentKey, orderId, amount: parseInt(amount),
-          readingCtx: ctx
-        })
-      });
+const TRANSITIONS = [
+  '이 카드는 특히 주목할 필요가 있습니다.',
+  '에너지가 강하게 느껴집니다.',
+  '이 위치에서 이 카드는 매우 의미심장합니다.',
+  '카드의 메시지에 귀를 기울여 보세요.',
+  '이 흐름 속에서 당신의 역할이 드러납니다.',
+];
 
-      if (!res.ok) throw new Error('Payment confirmation failed');
-      const data = await res.json();
+const CLOSINGS = [
+  '두려움보다 가능성에 초점을 맞추세요. 당신은 이미 충분히 강합니다.',
+  '카드가 보여주는 방향을 믿고 한 걸음씩 나아가세요.',
+  '이 순간의 통찰을 가슴에 새기고, 자신을 믿으며 나아가세요.',
+  '모든 답은 이미 당신 안에 있습니다. 타로는 그것을 비추는 거울입니다.',
+  '변화를 두려워하지 마세요. 카드들은 이미 당신의 용기를 알고 있습니다.',
+];
 
-      showResult(ctx, data.reading);
-      sessionStorage.removeItem('tarot_reading_ctx');
-      sessionStorage.removeItem('tarot_product');
-    } catch (err) {
-      showError('결제 확인 중 오류가 발생했습니다. 고객센터로 문의해주세요.');
-      console.error(err);
-    }
-  })();
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
-  function showResult(ctx, reading) {
-    document.getElementById('loadingState').style.display = 'none';
-    document.getElementById('resultState').style.display  = 'block';
+function generateReading(ctx) {
+  const { product, selectedCards, userName, userQuestion } = ctx;
+  const positions = POSITIONS[product.product] || selectedCards.map((_,i) => `카드 ${i+1}`);
+  const sections  = [];
 
-    // Subtitle
-    document.getElementById('resultSubtitle').textContent =
-      `${ctx.userName}님의 ${ctx.product.name} · 결과가 ${ctx.userEmail}로 발송되었습니다`;
+  // Intro section
+  sections.push({
+    title: '🔮 리딩을 시작하며',
+    paragraphs: [
+      `${userName}님, ${pick(INTROS)}`,
+      `"${userQuestion}"라는 질문을 품고 고른 카드들이 지금 이야기를 시작합니다. ${product.name} 리딩을 통해 지금 당신에게 필요한 메시지를 전해드리겠습니다.`
+    ]
+  });
 
-    // Cards row
-    const positions = (typeof SPREAD_POSITIONS !== 'undefined' && SPREAD_POSITIONS[ctx.product.product]) || [];
-    const cardsRow  = document.getElementById('resultCards');
-    ctx.selectedCards.forEach((card, i) => {
-      const el = document.createElement('div');
-      el.className = 'result-tarot-card';
-      el.innerHTML = `
-        <div class="result-tarot-card__pos">${positions[i] || `카드 ${i+1}`}</div>
-        <div class="result-tarot-card__name">${card.name}</div>
-        <div class="result-tarot-card__dir">${card.reversed ? '역방향 🔄' : '정방향 ↑'}</div>
-      `;
-      cardsRow.appendChild(el);
+  // Per-card sections
+  selectedCards.forEach((card, i) => {
+    const pos      = positions[i] || `카드 ${i+1}`;
+    const meaning  = card.isReversed ? card.reversed : card.upright;
+    const keywords = meaning.split(',').map(s => s.trim()).slice(0, 3);
+
+    sections.push({
+      title: `${getPositionEmoji(i)} ${pos} — ${card.name}${card.isReversed ? ' (역방향)' : ''}`,
+      paragraphs: [
+        `${pos} 자리에 ${card.name}(${card.nameEn})${card.isReversed ? ' 역방향' : ''}이 놓였습니다. ${pick(TRANSITIONS)}`,
+        `이 카드는 지금 당신에게 **${keywords.join(', ')}**의 에너지를 전하고 있습니다. ${buildCardMessage(card, pos, userQuestion)}`,
+      ]
     });
+  });
 
-    // Reading content
-    const content = document.getElementById('readingContent');
-    content.innerHTML = '';
-    if (Array.isArray(reading)) {
-      reading.forEach(section => {
-        const sec = document.createElement('div');
-        sec.className = 'reading-section';
-        sec.innerHTML = `<h3>${section.title}</h3>${section.paragraphs.map(p => `<p>${p}</p>`).join('')}`;
-        content.appendChild(sec);
-      });
-    } else {
-      const sec = document.createElement('div');
-      sec.className = 'reading-section';
-      sec.innerHTML = `<h3>🔮 종합 리딩</h3><p>${String(reading).replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>')}</p>`;
-      content.appendChild(sec);
-    }
+  // Closing section
+  sections.push({
+    title: '✨ 종합 메시지와 조언',
+    paragraphs: [
+      buildSummary(selectedCards, userName, userQuestion),
+      pick(CLOSINGS)
+    ]
+  });
+
+  return sections;
+}
+
+function getPositionEmoji(i) {
+  const emojis = ['🌙','☀️','⭐','🌀','💫','🎴','🔯','✨','🌟','💎'];
+  return emojis[i % emojis.length];
+}
+
+function buildCardMessage(card, pos, question) {
+  const q = question.toLowerCase();
+  if (q.includes('연애') || q.includes('사랑') || q.includes('관계') || q.includes('상대')) {
+    if (card.arcana === 'major') return `감정의 영역에서 이 카드는 특히 강한 울림을 줍니다. ${card.upright.split(',')[0]}의 에너지가 당신의 관계에 흐르고 있습니다.`;
+    if (card.arcana === 'cups') return `컵 슈트의 카드가 이 자리에 온 것은 감정적 메시지가 핵심임을 뜻합니다. 마음을 열고 느끼는 것이 중요합니다.`;
   }
+  if (q.includes('직업') || q.includes('일') || q.includes('취업') || q.includes('사업')) {
+    if (card.arcana === 'pentacles') return `물질과 현실의 슈트인 펜타클이 이 자리에서 당신의 커리어에 대해 말하고 있습니다. 꾸준한 노력이 결실을 맺을 것입니다.`;
+    if (card.arcana === 'wands') return `완드의 불꽃 에너지가 당신의 열정과 추진력을 상징합니다. 지금은 행동할 때입니다.`;
+  }
+  if (q.includes('돈') || q.includes('재물') || q.includes('재정') || q.includes('금전')) {
+    return `재물의 흐름에 대해 이 카드는 ${card.upright.split(',')[0]}을(를) 강조합니다. 현실적이고 균형 잡힌 시각이 필요한 시점입니다.`;
+  }
+  return `${pos}의 에너지 안에서 이 카드는 당신에게 ${card.upright.split(',')[0]}의 방향을 가리키고 있습니다.`;
+}
 
-  function showError(msg) {
+function buildSummary(cards, name, question) {
+  const majorCount = cards.filter(c => c.arcana === 'major').length;
+  const reversedCount = cards.filter(c => c.reversed).length;
+  let summary = `${name}님의 카드 배열을 전체적으로 살펴보면, `;
+  if (majorCount > cards.length / 2) {
+    summary += `메이저 아르카나가 ${majorCount}장으로 지금 삶에서 중요한 전환점이 다가오고 있음을 강하게 암시합니다. `;
+  } else {
+    summary += `일상의 흐름과 실질적인 에너지들이 강하게 작용하고 있는 시기입니다. `;
+  }
+  if (reversedCount > 0) {
+    summary += `역방향 카드 ${reversedCount}장은 내면의 저항이나 아직 발현되지 않은 잠재력을 나타냅니다. 이 에너지들을 인식하는 것이 첫 걸음입니다. `;
+  }
+  summary += `질문하신 "${question.slice(0, 30)}${question.length > 30 ? '...' : ''}"에 대한 답은, 지금 당신이 서 있는 곳에서 이미 시작되고 있습니다.`;
+  return summary;
+}
+
+function renderResult(ctx, sections) {
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('resultState').style.display  = 'block';
+
+  document.getElementById('resultSubtitle').textContent =
+    `${ctx.userName}님의 ${ctx.product.name} · ${new Date().toLocaleDateString('ko-KR')}`;
+
+  // Cards row
+  const cardsRow = document.getElementById('resultCards');
+  const positions = POSITIONS[ctx.product.product] || [];
+  ctx.selectedCards.forEach((card, i) => {
+    const el = document.createElement('div');
+    el.className = 'result-tarot-card';
+    el.innerHTML = `
+      <div class="result-tarot-card__pos">${positions[i] || `카드 ${i+1}`}</div>
+      <div class="result-tarot-card__name">${card.name}</div>
+      <div class="result-tarot-card__dir">${card.isReversed ? '역방향 🔄' : '정방향 ↑'}</div>
+    `;
+    cardsRow.appendChild(el);
+  });
+
+  // Reading sections
+  const content = document.getElementById('readingContent');
+  content.innerHTML = '';
+  sections.forEach(sec => {
+    const div = document.createElement('div');
+    div.className = 'reading-section';
+    div.innerHTML = `<h3>${sec.title}</h3>${sec.paragraphs.map(p =>
+      `<p>${p.replace(/\*\*(.*?)\*\*/g, '<strong style="color:var(--gold-light)">$1</strong>')}</p>`
+    ).join('')}`;
+    content.appendChild(div);
+  });
+}
+
+// Init
+window.addEventListener('DOMContentLoaded', () => {
+  const raw = sessionStorage.getItem('tarot_reading_ctx');
+  if (!raw) {
     document.getElementById('loadingState').style.display = 'none';
-    document.getElementById('errorState').style.display   = 'block';
-    document.getElementById('errorMsg').textContent = msg;
+    document.getElementById('errorState').style.display  = 'block';
+    document.getElementById('errorMsg').textContent = '리딩 정보를 찾을 수 없습니다. 처음부터 다시 시작해주세요.';
+    return;
   }
-  </script>
+
+  const ctx = JSON.parse(raw);
+  // Simulate thinking time for immersion
+  setTimeout(() => {
+    const sections = generateReading(ctx);
+    renderResult(ctx, sections);
+    sessionStorage.removeItem('tarot_reading_ctx');
+  }, 2200);
+});
+</script>
 </body>
 </html>

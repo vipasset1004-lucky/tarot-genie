@@ -804,6 +804,37 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 .chatbot__send:hover { transform: scale(1.1); box-shadow: 0 6px 20px var(--purple-glow); }
 
+/* ===== Product Header Bar ===== */
+.product-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(14, 12, 35, 0.8);
+  border: 1px solid rgba(120, 80, 220, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 18px 24px;
+  margin-bottom: 36px;
+}
+.product-header-bar__label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  letter-spacing: 0.3px;
+}
+.product-header-bar__name {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+.product-header-bar__price {
+  font-size: 26px;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 /* ===== Reading Page ===== */
 .reading-page {
   min-height: 100vh;

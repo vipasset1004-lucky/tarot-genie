@@ -10,133 +10,107 @@
 </head>
 <body class="reading-page">
 
-  <nav class="nav scrolled" id="nav">
-    <div class="nav__inner">
-      <a href="/" class="nav__logo">
-        <span class="nav__logo-text">🔮 팔자연구소</span>
-        <span class="nav__logo-sub">타로 지니</span>
-      </a>
+<nav class="nav scrolled" id="nav">
+  <div class="nav__inner">
+    <a href="index.html" class="nav__logo">
+      <span class="nav__logo-text">🔮 팔자연구소</span>
+      <span class="nav__logo-sub">&nbsp;타로 지니</span>
+    </a>
+  </div>
+</nav>
+
+<div class="reading-container">
+
+  <!-- Product Header -->
+  <div class="product-header-bar">
+    <div>
+      <div class="product-header-bar__label">선택하신 상품</div>
+      <div id="productName" class="product-header-bar__name"></div>
     </div>
-  </nav>
+    <div id="productPrice" class="product-header-bar__price"></div>
+  </div>
 
-  <div class="reading-container">
-    <!-- Product info header -->
-    <div id="productHeader" style="margin-bottom:32px;padding:20px 24px;background:rgba(14,12,35,0.8);border:1px solid rgba(120,80,220,0.2);border-radius:14px;display:flex;align-items:center;justify-content:space-between;">
-      <div>
-        <div style="font-size:13px;color:var(--text-muted);margin-bottom:4px;">선택하신 상품</div>
-        <div id="productName" style="font-size:20px;font-weight:800;"></div>
-      </div>
-      <div id="productPrice" style="font-size:26px;font-weight:900;background:linear-gradient(135deg,#f59e0b,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"></div>
+  <!-- Progress Bar -->
+  <div class="progress-bar">
+    <div class="progress-step active" id="ps1">
+      <div class="progress-step__dot">1</div>
+      <div class="progress-step__label">정보 입력</div>
     </div>
-
-    <!-- Progress Bar -->
-    <div class="progress-bar" id="progressBar">
-      <div class="progress-step active" id="ps1">
-        <div class="progress-step__dot">1</div>
-        <div class="progress-step__label">정보 입력</div>
-      </div>
-      <div class="progress-line" id="pl1"></div>
-      <div class="progress-step" id="ps2">
-        <div class="progress-step__dot">2</div>
-        <div class="progress-step__label">카드 선택</div>
-      </div>
-      <div class="progress-line" id="pl2"></div>
-      <div class="progress-step" id="ps3">
-        <div class="progress-step__dot">3</div>
-        <div class="progress-step__label">결제</div>
-      </div>
+    <div class="progress-line" id="pl1"></div>
+    <div class="progress-step" id="ps2">
+      <div class="progress-step__dot">2</div>
+      <div class="progress-step__label">카드 선택</div>
     </div>
-
-    <!-- Step 1: User Info -->
-    <div class="step-panel active" id="step1">
-      <h2>당신에 대해 <span>알려주세요</span></h2>
-      <p>더 정확한 리딩을 위해 아래 정보를 입력해 주세요.</p>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>이름 *</label>
-          <input type="text" id="userName" placeholder="홍길동" required>
-        </div>
-        <div class="form-group">
-          <label>생년월일 *</label>
-          <input type="date" id="userBirth" required>
-        </div>
-        <div class="form-group">
-          <label>이메일 *</label>
-          <input type="email" id="userEmail" placeholder="결과를 받을 이메일" required>
-        </div>
-        <div class="form-group">
-          <label>성별</label>
-          <select id="userGender">
-            <option value="">선택 안 함</option>
-            <option value="male">남성</option>
-            <option value="female">여성</option>
-          </select>
-        </div>
-        <div class="form-group full">
-          <label>지금 가장 큰 고민이나 질문은? *</label>
-          <textarea id="userQuestion" placeholder="예: 현재 연애 관계가 앞으로 어떻게 될지 궁금합니다. 상대방의 마음을 알고 싶어요." required></textarea>
-        </div>
-      </div>
-      <div style="text-align:right;">
-        <button class="btn btn--primary" onclick="goToStep2()" style="min-width:160px;">카드 선택하기 →</button>
-      </div>
-    </div>
-
-    <!-- Step 2: Card Selection -->
-    <div class="step-panel" id="step2">
-      <h2>카드를 <span>선택해주세요</span></h2>
-      <p>마음이 이끌리는 카드를 골라주세요. 직감을 따르세요.</p>
-
-      <div class="card-info-bar">
-        <p>🃏 78장의 타로 카드 중에서 고르세요</p>
-        <div class="card-counter">
-          <strong id="selectedCount">0</strong>
-          <span id="neededCount">/ 1 장 선택</span>
-        </div>
-      </div>
-
-      <div class="card-deck" id="cardDeck"></div>
-
-      <div style="display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap;">
-        <button class="btn btn--outline" onclick="goToStep1()">← 이전</button>
-        <button class="btn btn--primary" id="step2Next" onclick="goToStep3()" disabled style="min-width:160px;">결제하기 →</button>
-      </div>
-    </div>
-
-    <!-- Step 3: Payment -->
-    <div class="step-panel" id="step3">
-      <h2>결제를 <span>완료해주세요</span></h2>
-      <p>토스페이먼츠로 안전하게 결제하세요.</p>
-
-      <div style="background:rgba(14,12,35,0.8);border:1px solid rgba(120,80,220,0.2);border-radius:14px;padding:28px;margin-bottom:28px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid rgba(120,80,220,0.15);">
-          <span style="color:var(--text-muted);">상품</span>
-          <span id="orderProductName" style="font-weight:700;"></span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid rgba(120,80,220,0.15);">
-          <span style="color:var(--text-muted);">선택 카드 수</span>
-          <span id="orderCardCount" style="font-weight:700;color:var(--purple-light);"></span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-weight:700;">결제 금액</span>
-          <span id="orderPrice" style="font-size:28px;font-weight:900;background:linear-gradient(135deg,#f59e0b,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"></span>
-        </div>
-      </div>
-
-      <div id="paymentWidget" style="margin-bottom:24px;"></div>
-
-      <div style="display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;">
-        <button class="btn btn--outline" onclick="goToStep2()">← 이전</button>
-        <button class="btn btn--gold" id="payBtn" onclick="requestPayment()" style="min-width:200px;font-size:17px;">💳 결제하기</button>
-      </div>
-
-      <p style="text-align:center;color:var(--text-muted);font-size:13px;margin-top:16px;">
-        🔒 토스페이먼츠 보안 결제 · SSL 암호화 적용
-      </p>
+    <div class="progress-line" id="pl2"></div>
+    <div class="progress-step" id="ps3">
+      <div class="progress-step__dot">3</div>
+      <div class="progress-step__label">결과 확인</div>
     </div>
   </div>
 
-  <script src="js/cards.js"></script>
-  <script src="js/reading.js"></script>
+  <!-- Step 1: User Info -->
+  <div class="step-panel active" id="step1">
+    <h2>당신에 대해 <span>알려주세요</span></h2>
+    <p>더 정확한 리딩을 위해 아래 정보를 입력해 주세요.</p>
+    <div id="fieldError" style="display:none;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);border-radius:10px;padding:12px 16px;margin-bottom:20px;color:#fca5a5;font-size:14px;"></div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>이름 *</label>
+        <input type="text" id="userName" placeholder="홍길동">
+      </div>
+      <div class="form-group">
+        <label>생년월일 *</label>
+        <input type="date" id="userBirth">
+      </div>
+      <div class="form-group">
+        <label>이메일 *</label>
+        <input type="email" id="userEmail" placeholder="결과를 받을 이메일">
+      </div>
+      <div class="form-group">
+        <label>성별</label>
+        <select id="userGender">
+          <option value="">선택 안 함</option>
+          <option value="male">남성</option>
+          <option value="female">여성</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>지금 가장 큰 고민이나 질문은? *</label>
+        <textarea id="userQuestion" placeholder="예: 현재 연애 관계가 앞으로 어떻게 될지 궁금합니다. 상대방의 마음을 알고 싶어요."></textarea>
+      </div>
+    </div>
+    <div style="text-align:right;">
+      <button class="btn btn--primary" onclick="goToStep2()" style="min-width:180px;font-size:16px;">카드 선택하기 →</button>
+    </div>
+  </div>
+
+  <!-- Step 2: Card Selection -->
+  <div class="step-panel" id="step2">
+    <h2>카드를 <span>선택해주세요</span></h2>
+    <p>마음이 이끌리는 카드를 골라주세요. 생각하지 말고 직감을 따르세요.</p>
+
+    <div class="card-info-bar">
+      <p>🃏 78장의 타로 카드 중에서 마음이 끌리는 카드를 고르세요</p>
+      <div class="card-counter">
+        <strong id="selectedCount">0</strong>
+        <span id="neededCount">/ 1장 선택</span>
+      </div>
+    </div>
+
+    <div class="card-deck" id="cardDeck"></div>
+
+    <div style="display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-top:8px;">
+      <button class="btn btn--outline" onclick="goToStep1()">← 이전으로</button>
+      <button class="btn btn--primary" id="step2Next" onclick="goToResult()" disabled style="min-width:180px;font-size:16px;">결과 보기 →</button>
+    </div>
+  </div>
+
+  <!-- Step 3 placeholder (redirect happens directly) -->
+  <div class="step-panel" id="step3"></div>
+
+</div>
+
+<script src="js/cards.js"></script>
+<script src="js/reading.js"></script>
 </body>
 </html>
