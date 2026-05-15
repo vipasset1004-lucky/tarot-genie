@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>타로 리딩 결과 | 팔자연구소 타로 지니</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="result-page">
+
+  <nav class="nav scrolled" id="nav">
+    <div class="nav__inner">
+      <a href="/" class="nav__logo">
+        <span class="nav__logo-text">🔮 팔자연구소</span>
+        <span class="nav__logo-sub">&nbsp;타로 지니</span>
+      </a>
+      <a href="/" class="btn btn--outline btn--sm">홈으로</a>
+    </div>
+  </nav>
+
+  <!-- Loading State -->
+  <div id="loadingState" class="result-container">
+    <div class="loading">
+      <div class="loading__orb">🔮</div>
+      <h3>카드를 해석하고 있습니다</h3>
+      <p>당신만을 위한 리딩을 준비하고 있어요...</p>
+      <div class="loading__dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result State -->
+  <div id="resultState" class="result-container" style="display:none;">
+
+    <div class="result-header">
+      <span class="big-orb">🔮</span>
+      <h1>당신의 <span>타로 리딩</span> 결과</h1>
+      <p id="resultSubtitle">리딩이 완료되었습니다. 이메일로도 발송해드렸습니다.</p>
+    </div>
+
+    <!-- Selected Cards -->
+    <div class="result-cards-row" id="resultCards"></div>
+
+    <!-- Reading Content -->
+    <div class="reading-content" id="readingContent">
+      <div class="reading-section">
+        <h3>🔮 종합 리딩</h3>
+        <p id="readingText">리딩 결과를 불러오는 중...</p>
+      </div>
+    </div>
+
+    <div class="result-actions">
+      <button class="btn btn--primary" onclick="window.print()">🖨️ 인쇄하기</button>
+      <a href="/" class="btn btn--outline">다시 리딩받기</a>
+    </div>
+
+  </div>
+
+  <!-- Error State -->
+  <div id="errorState" class="result-container" style="display:none;">
+    <div class="loading">
+      <div class="loading__orb">😔</div>
+      <h3>리딩 결과를 불러오지 못했습니다</h3>
+      <p id="errorMsg">잠시 후 다시 시도해주세요.</p>
+      <a href="/" class="btn btn--primary" style="margin-top:16px;">홈으로 돌아가기</a>
+    </div>
+  </div>
+
+  <script src="js/cards.js"></script>
+  <script>
+  (async function() {
+    const params = new URLSearchParams(window.location.search);
+    const paymentKey = params.get('paymentKey');
+    const orderId    = params.get('orderId');
+    const amount     = params.get('amount');
+    const ctx        = JSON.parse(sessionStorage.getItem('tarot_reading_ctx') || 'null');
+
+    if (!paymentKey || !orderId || !ctx) {
+      showError('결제 정보를 찾을 수 없습니다.');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/payment/confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          paymentKey, orderId, amount: parseInt(amount),
+          readingCtx: ctx
+        })
+      });
+
+      if (!res.ok) throw new Error('Payment confirmation failed');
+      const data = await res.json();
+
+      showResult(ctx, data.reading);
+      sessionStorage.removeItem('tarot_reading_ctx');
+      sessionStorage.removeItem('tarot_product');
+    } catch (err) {
+      showError('결제 확인 중 오류가 발생했습니다. 고객센터로 문의해주세요.');
+      console.error(err);
+    }
+  })();
+
+  function showResult(ctx, reading) {
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('resultState').style.display  = 'block';
+
+    // Subtitle
+    document.getElementById('resultSubtitle').textContent =
+      `${ctx.userName}님의 ${ctx.product.name} · 결과가 ${ctx.userEmail}로 발송되었습니다`;
+
+    // Cards row
+    const positions = (typeof SPREAD_POSITIONS !== 'undefined' && SPREAD_POSITIONS[ctx.product.product]) || [];
+    const cardsRow  = document.getElementById('resultCards');
+    ctx.selectedCards.forEach((card, i) => {
+      const el = document.createElement('div');
+      el.className = 'result-tarot-card';
+      el.innerHTML = `
+        <div class="result-tarot-card__pos">${positions[i] || `카드 ${i+1}`}</div>
+        <div class="result-tarot-card__name">${card.name}</div>
+        <div class="result-tarot-card__dir">${card.reversed ? '역방향 🔄' : '정방향 ↑'}</div>
+      `;
+      cardsRow.appendChild(el);
+    });
+
+    // Reading content
+    const content = document.getElementById('readingContent');
+    content.innerHTML = '';
+    if (Array.isArray(reading)) {
+      reading.forEach(section => {
+        const sec = document.createElement('div');
+        sec.className = 'reading-section';
+        sec.innerHTML = `<h3>${section.title}</h3>${section.paragraphs.map(p => `<p>${p}</p>`).join('')}`;
+        content.appendChild(sec);
+      });
+    } else {
+      const sec = document.createElement('div');
+      sec.className = 'reading-section';
+      sec.innerHTML = `<h3>🔮 종합 리딩</h3><p>${String(reading).replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>')}</p>`;
+      content.appendChild(sec);
+    }
+  }
+
+  function showError(msg) {
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('errorState').style.display   = 'block';
+    document.getElementById('errorMsg').textContent = msg;
+  }
+  </script>
+</body>
+</html>
