@@ -1,6 +1,9 @@
 import Anthropic from '@anthropic-ai/sdk';
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const client = new Anthropic({
+  apiKey:  process.env.OPENROUTER_API_KEY,
+  baseURL: 'https://openrouter.ai/api/v1'
+});
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
@@ -25,7 +28,7 @@ export default async function handler(req, res) {
 
   try {
     const msg = await client.messages.create({
-      model: 'claude-haiku-4-5-20251001',
+      model: '~anthropic/claude-haiku-latest',
       max_tokens: 300,
       system: systemPrompt,
       messages: [{ role: 'user', content: message }]

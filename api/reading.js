@@ -1,6 +1,9 @@
 import Anthropic from '@anthropic-ai/sdk';
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const client = new Anthropic({
+  apiKey:  process.env.OPENROUTER_API_KEY,
+  baseURL: 'https://openrouter.ai/api/v1'
+});
 
 // ──────────────────────────────────────────────
 // SYSTEM PROMPT v2.0 — 팔자연구소 타로 지니
@@ -434,14 +437,15 @@ const PRODUCT_DESCRIPTIONS = {
 };
 
 // 상품별 모델 — 저~중가는 Sonnet(빠르고 저렴), 프리미엄은 Opus(깊이)
+// OpenRouter 경유: '~' prefix = latest router (자동으로 최신 stable 매핑)
 const MODEL_BY_PRODUCT = {
-  daily:         'claude-sonnet-4-6',
-  curious:       'claude-sonnet-4-6',
-  three:         'claude-sonnet-4-6',
-  yearly:        'claude-sonnet-4-6',
-  comprehensive: 'claude-opus-4-7',
-  celtic:        'claude-opus-4-7',
-  saju:          'claude-opus-4-7'
+  daily:         '~anthropic/claude-sonnet-latest',
+  curious:       '~anthropic/claude-sonnet-latest',
+  three:         '~anthropic/claude-sonnet-latest',
+  yearly:        '~anthropic/claude-sonnet-latest',
+  comprehensive: 'anthropic/claude-opus-4.7',
+  celtic:        'anthropic/claude-opus-4.7',
+  saju:          'anthropic/claude-opus-4.7'
 };
 const PREMIUM_PRODUCTS = new Set(['celtic', 'saju']);
 
