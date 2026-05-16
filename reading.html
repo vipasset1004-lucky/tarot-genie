@@ -52,6 +52,11 @@
   <div class="step-panel active" id="step1">
     <h2>당신에 대해 <span>알려주세요</span></h2>
     <p>더 정확한 리딩을 위해 아래 정보를 입력해 주세요.</p>
+    <!-- 저장된 프로필 안내 (자동 채움 시 표시) -->
+    <div id="savedProfileNotice" class="saved-profile-notice" style="display:none;">
+      <span class="saved-profile-notice__msg">💾 <strong id="savedProfileName"></strong>님 정보로 채웠습니다 — 질문만 입력하시면 돼요</span>
+      <button type="button" class="saved-profile-notice__clear" onclick="clearSavedProfile()">다른 분이에요</button>
+    </div>
     <div id="fieldError" style="display:none;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);border-radius:10px;padding:12px 16px;margin-bottom:20px;color:#fca5a5;font-size:14px;"></div>
     <div class="form-grid">
       <div class="form-group">

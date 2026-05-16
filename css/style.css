@@ -960,6 +960,62 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   opacity: 0.85;
 }
 
+/* ===== Saved Profile Notice (같은 폰 재방문 시 자동 채움 안내) ===== */
+.saved-profile-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(124,58,237,0.10));
+  border: 1px solid rgba(245,158,11,0.35);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 18px;
+  color: #fde68a;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.saved-profile-notice__msg {
+  flex: 1;
+  min-width: 0;
+}
+.saved-profile-notice__msg strong {
+  color: var(--gold-light, #fcd34d);
+  font-weight: 700;
+}
+.saved-profile-notice__clear {
+  flex: 0 0 auto;
+  background: transparent;
+  border: 1px solid rgba(245,158,11,0.5);
+  color: #fde68a;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.saved-profile-notice__clear:hover,
+.saved-profile-notice__clear:active {
+  background: rgba(245,158,11,0.15);
+  border-color: rgba(245,158,11,0.7);
+}
+@media (max-width: 480px) {
+  .saved-profile-notice {
+    flex-direction: column;
+    align-items: stretch;
+    font-size: 13px;
+    padding: 10px 12px;
+    gap: 8px;
+  }
+  .saved-profile-notice__clear {
+    align-self: flex-end;
+    font-size: 12px;
+    padding: 5px 12px;
+  }
+}
+
 /* ===== Question Examples ===== */
 .question-examples {
   display: flex;

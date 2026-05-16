@@ -16,7 +16,68 @@ window.addEventListener('DOMContentLoaded', () => {
   buildBirthSelects();
   buildDeck();
   updateCounter();
+  applySavedProfile();    // 같은 폰에서 재방문 시 이름·생일·성별 자동 채움
 });
+
+/* ===== Saved Profile (이름·생일·성별 재방문 시 자동 채움) ===== */
+const PROFILE_KEY = 'tarot_user_profile';
+
+function loadSavedProfile() {
+  try { return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null'); }
+  catch { return null; }
+}
+
+function saveProfile(p) {
+  try { localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); }
+  catch (e) { /* quota 등 무시 */ }
+}
+
+function applySavedProfile() {
+  const p = loadSavedProfile();
+  if (!p || !p.userName || !p.userBirth) return;
+
+  // 폼 자동 채움
+  const nameEl = document.getElementById('userName');
+  if (nameEl) nameEl.value = p.userName;
+
+  const [y, m, d] = (p.userBirth || '').split('-');
+  if (y && m && d) {
+    const yEl = document.getElementById('userBirthYear');
+    const mEl = document.getElementById('userBirthMonth');
+    const dEl = document.getElementById('userBirthDay');
+    if (yEl) yEl.value = y;
+    if (mEl) { mEl.value = m; mEl.dispatchEvent(new Event('change')); }
+    if (dEl) dEl.value = d;
+  }
+  const gEl = document.getElementById('userGender');
+  if (gEl && p.userGender) gEl.value = p.userGender;
+
+  // 안내 박스 표시
+  const notice = document.getElementById('savedProfileNotice');
+  const nameSpan = document.getElementById('savedProfileName');
+  if (notice && nameSpan) {
+    nameSpan.textContent = p.userName;
+    notice.style.display = 'flex';
+  }
+
+  // 질문 입력 칸으로 부드럽게 안내
+  setTimeout(() => {
+    const q = document.getElementById('userQuestion');
+    if (q) q.focus({ preventScroll: true });
+  }, 100);
+}
+
+function clearSavedProfile() {
+  try { localStorage.removeItem(PROFILE_KEY); } catch {}
+  // 폼 초기화
+  ['userName', 'userBirthYear', 'userBirthMonth', 'userBirthDay', 'userGender']
+    .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  // 안내 박스 숨기기
+  const notice = document.getElementById('savedProfileNotice');
+  if (notice) notice.style.display = 'none';
+  // 이름 칸으로 포커스
+  document.getElementById('userName')?.focus();
+}
 
 /* ===== Birth Date Selects (Year / Month / Day) ===== */
 function buildBirthSelects() {
@@ -191,6 +252,14 @@ function goToResult() {
     userQuestion: document.getElementById('userQuestion')?.value.trim(),
   };
   sessionStorage.setItem('tarot_reading_ctx', JSON.stringify(ctx));
+
+  // 같은 폰에서 재방문 시 자동 채움용 — 질문은 매번 다르니 저장 안 함
+  saveProfile({
+    userName:   ctx.userName,
+    userBirth:  ctx.userBirth,
+    userGender: ctx.userGender
+  });
+
   window.location.href = 'result.html';
 }
 
