@@ -151,16 +151,18 @@ const PRODUCT_DESCRIPTIONS = {
   saju:          '사주의 기운과 타로를 결합한 심층 통합 분석 리딩'
 };
 
-// 상품별 모델 — 모두 Sonnet (Opus는 응답 속도 너무 느려 timeout 위험)
-// 프리미엄 차별화는 max_tokens(응답 길이)로 — 시스템 프롬프트 압축으로 깊이는 Sonnet도 충분
+// 상품별 모델 — Vercel Hobby 60초 timeout 안에 끝내려면
+// Sonnet 한국어 ~40 tok/s, Haiku ~150 tok/s.
+// 4~10장 카드는 응답 토큰이 커서 Sonnet으로 60초 초과 → 5장 이상은 Haiku.
+// 시스템 프롬프트 v4.0 압축으로 Haiku에서도 통찰 깊이 유지.
 const MODEL_BY_PRODUCT = {
-  daily:         '~anthropic/claude-sonnet-latest',
-  curious:       '~anthropic/claude-sonnet-latest',
-  three:         '~anthropic/claude-sonnet-latest',
-  yearly:        '~anthropic/claude-sonnet-latest',
-  comprehensive: '~anthropic/claude-sonnet-latest',
-  celtic:        '~anthropic/claude-sonnet-latest',
-  saju:          '~anthropic/claude-sonnet-latest'
+  daily:         '~anthropic/claude-sonnet-latest',   // 1장 — 빠름
+  curious:       '~anthropic/claude-sonnet-latest',   // 3장 — 마진 OK
+  three:         '~anthropic/claude-sonnet-latest',   // 3장
+  yearly:        '~anthropic/claude-sonnet-latest',   // 3장
+  comprehensive: '~anthropic/claude-haiku-latest',    // 5장 — 속도 필수
+  celtic:        '~anthropic/claude-haiku-latest',    // 10장
+  saju:          '~anthropic/claude-haiku-latest'     // 10장
 };
 const PREMIUM_PRODUCTS = new Set(['celtic', 'saju']);
 
