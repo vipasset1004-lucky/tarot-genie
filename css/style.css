@@ -1047,6 +1047,165 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   transform: translateY(-1px);
 }
 
+/* ===== Legal Page (개인정보처리방침 등) ===== */
+.legal-page { background: var(--bg-deep, #0a0820); color: var(--text, #e9e6f5); }
+.legal-container {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 100px 20px 80px;
+  line-height: 1.75;
+}
+.legal-header {
+  text-align: center;
+  margin-bottom: 36px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid rgba(245,158,11,0.25);
+}
+.legal-header h1 {
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--gold-light, #fcd34d);
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+.legal-meta {
+  font-size: 14px;
+  color: var(--text-muted, #9ca3af);
+  letter-spacing: 0.5px;
+}
+.legal-intro {
+  background: rgba(124,58,237,0.08);
+  border-left: 3px solid var(--purple, #7c3aed);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin-bottom: 32px;
+  font-size: 15px;
+  color: #e9d5ff;
+}
+.legal-section {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px dashed rgba(124,58,237,0.18);
+}
+.legal-section:last-of-type { border-bottom: none; }
+.legal-section h2 {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--gold, #f59e0b);
+  margin-bottom: 14px;
+  letter-spacing: 0.3px;
+}
+.legal-section h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fcd34d;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+.legal-section p { font-size: 14.5px; margin-bottom: 10px; color: #d4d4e8; }
+.legal-section ul, .legal-section ol {
+  padding-left: 22px;
+  margin-bottom: 10px;
+}
+.legal-section li {
+  font-size: 14.5px;
+  color: #d4d4e8;
+  margin-bottom: 6px;
+}
+.legal-section strong { color: #fef3c7; font-weight: 600; }
+.legal-section a {
+  color: var(--gold-light, #fcd34d);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.legal-section a:hover { color: #fff; }
+
+.legal-table-wrap { overflow-x: auto; margin: 12px 0; }
+.legal-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+  min-width: 560px;
+}
+.legal-table th, .legal-table td {
+  padding: 10px 12px;
+  border: 1px solid rgba(124,58,237,0.25);
+  text-align: left;
+  vertical-align: top;
+}
+.legal-table thead th {
+  background: rgba(124,58,237,0.15);
+  color: var(--gold-light, #fcd34d);
+  font-weight: 700;
+}
+.legal-table tbody tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+
+.legal-note {
+  font-size: 13px;
+  color: var(--text-muted, #9ca3af);
+  background: rgba(0,0,0,0.2);
+  border-radius: 6px;
+  padding: 12px 14px;
+  margin-top: 12px;
+  line-height: 1.7;
+}
+
+.legal-contact {
+  background: rgba(245,158,11,0.06);
+  border: 1px solid rgba(245,158,11,0.25);
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 12px;
+}
+.legal-contact p { margin-bottom: 6px; font-size: 14px; }
+.legal-contact p:last-child { margin-bottom: 0; }
+
+.legal-footer {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(245,158,11,0.25);
+  text-align: center;
+}
+.legal-footer p { color: var(--text-muted, #9ca3af); font-size: 13px; margin-bottom: 16px; }
+
+@media (max-width: 480px) {
+  .legal-container { padding: 80px 16px 60px; }
+  .legal-header h1 { font-size: 26px; }
+  .legal-section h2 { font-size: 17px; }
+  .legal-section p, .legal-section li { font-size: 13.5px; }
+}
+
+/* footer 안 개인정보 링크 */
+.footer__legal {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--text-muted, #9ca3af);
+}
+.footer__legal a {
+  color: var(--gold-light, #fcd34d);
+  text-decoration: none;
+  border-bottom: 1px dotted rgba(245,158,11,0.4);
+  padding-bottom: 1px;
+}
+.footer__legal a:hover { color: #fff; border-bottom-color: #fff; }
+
+/* 정보 입력 폼 하단 동의 간주 안내 */
+.consent-note {
+  margin-top: 16px;
+  padding: 10px 14px;
+  background: rgba(0,0,0,0.2);
+  border-left: 2px solid rgba(124,58,237,0.5);
+  border-radius: 4px;
+  font-size: 12.5px;
+  color: var(--text-muted, #9ca3af);
+  line-height: 1.6;
+}
+.consent-note a {
+  color: var(--gold-light, #fcd34d);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 /* ===== Focus Prompt (카드 선택 전 의례적 집중 안내) ===== */
 .focus-prompt {
   display: flex;
