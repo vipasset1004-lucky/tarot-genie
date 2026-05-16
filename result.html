@@ -101,9 +101,30 @@ function renderResult(ctx, sections) {
   sectionList.forEach(sec => {
     const div = document.createElement('div');
     div.className = 'reading-section';
-    div.innerHTML = `<h3>${sec.title}</h3>${(sec.paragraphs || []).map(p =>
+
+    // 카드 분석 섹션 감지 — title에 "카드 N" 패턴 있으면 해당 카드 이미지 삽입
+    const cardMatch = (sec.title || '').match(/카드\s*(\d+)/);
+    let cardImgHtml = '';
+    if (cardMatch) {
+      const idx = parseInt(cardMatch[1]) - 1;
+      const card = ctx.selectedCards[idx];
+      if (card) {
+        const imgInner = card.image
+          ? `<img class="reading-section__card-img${card.isReversed ? ' reversed' : ''}" src="${card.image}" alt="${card.name}" loading="lazy">`
+          : `<div class="reading-section__card-placeholder"><span>✦</span></div>`;
+        cardImgHtml = `
+          <div class="reading-section__card-img-wrap">
+            ${imgInner}
+            <div class="reading-section__card-meta">${positions[idx] || ''} · ${card.name} · ${card.isReversed ? '역방향 🔄' : '정방향 ↑'}</div>
+          </div>`;
+      }
+    }
+
+    const paragraphsHtml = (sec.paragraphs || []).map(p =>
       `<p>${p.replace(/\*\*(.*?)\*\*/g, '<strong style="color:var(--gold-light)">$1</strong>')}</p>`
-    ).join('')}`;
+    ).join('');
+
+    div.innerHTML = `<h3>${sec.title}</h3>${cardImgHtml}${paragraphsHtml}`;
     content.appendChild(div);
   });
 }
