@@ -1330,8 +1330,12 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
     max-height: min(480px, calc(100vh - 120px));
   }
   .chatbot__input-wrap { padding: 12px 14px; gap: 8px; }
-  .chatbot__input { padding: 10px 16px; font-size: 14px; min-width: 0; }
+  /* iOS Safari가 input focus 시 자동 줌하는 걸 방지하려면 font-size >= 16px */
+  .chatbot__input { padding: 10px 16px; font-size: 16px; min-width: 0; }
   .chatbot__send { width: 40px; height: 40px; font-size: 17px; }
+  .form-group input,
+  .form-group textarea,
+  .form-group select { font-size: 16px; }
   .hero__stats { gap: 24px; }
   .reading-content { padding: 28px 22px; }
   .progress-step__label { font-size: 10px; }
