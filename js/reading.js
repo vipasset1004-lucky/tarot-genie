@@ -139,6 +139,13 @@ function goToResult() {
   window.location.href = 'result.html';
 }
 
+function fillQuestion(btn) {
+  const ta = document.getElementById('userQuestion');
+  if (!ta) return;
+  ta.value = btn.textContent.trim();
+  ta.focus();
+}
+
 function showFieldError(msg) {
   const el = document.getElementById('fieldError');
   if (!el) return;

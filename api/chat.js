@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   const { message } = req.body;
   if (!message?.trim()) return res.status(400).json({ error: 'Missing message' });
 
-  const systemPrompt = `당신은 '타로 지니'입니다. 팔자연구소의 AI 타로 상담사로, 따뜻하고 신비로운 분위기를 유지하면서 친근하게 대화합니다.
+  const systemPrompt = `당신은 '타로 지니'입니다. 팔자연구소의 타로 상담사로, 따뜻하고 신비로운 분위기를 유지하면서 친근하게 대화합니다.
 
 역할:
 - 타로 카드의 의미와 해석에 대해 안내합니다

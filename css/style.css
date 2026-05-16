@@ -924,6 +924,37 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .form-group textarea::placeholder { color: var(--text-muted); }
 .form-group select option { background: #0e0d22; }
 
+/* ===== Question Examples ===== */
+.question-examples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+.question-examples__label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-right: 4px;
+}
+.question-chip {
+  background: rgba(124, 58, 237, 0.12);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  color: var(--purple-light);
+  padding: 7px 14px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.question-chip:hover {
+  background: rgba(124, 58, 237, 0.25);
+  border-color: var(--purple-light);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
 .card-info-bar {
   display: flex;
   align-items: center;
@@ -1101,7 +1132,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 @media (max-width: 640px) {
   .products__grid { grid-template-columns: 1fr; }
   .features__grid { grid-template-columns: repeat(2, 1fr); }
-  .hero__title { font-size: 38px; }
+  .hero__title { font-size: 36px; }
   .btn--hero { font-size: 16px; padding: 17px 40px; }
   .fcard--2, .fcard--4, .fcard--6 { display: none; }
   .form-grid { grid-template-columns: 1fr; }
@@ -1111,4 +1142,116 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   .progress-step__label { font-size: 10px; }
   .progress-line { min-width: 16px; }
   .cursor-glow { display: none; }
+
+  /* ===== 모바일 5단계 섹션 — 3x2 그리드 정렬 ===== */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px 10px;
+    justify-items: center;
+  }
+  .step {
+    min-width: 0;
+    max-width: none;
+    padding: 12px 4px;
+    width: 100%;
+  }
+  .step__line { display: none; }
+  .step:nth-child(9) { grid-column: 1 / -1; max-width: 200px; }
+  .step__circle { width: 38px; height: 38px; font-size: 14px; margin-bottom: 10px; }
+  .step__icon { font-size: 28px; margin-bottom: 8px; }
+  .step h3 { font-size: 13px; margin-bottom: 4px; }
+  .step p { font-size: 11px; line-height: 1.4; }
+
+  /* ===== 카드 카운터 줄바꿈 방지 ===== */
+  .card-info-bar { gap: 12px; padding: 14px 16px; }
+  .card-info-bar p { font-size: 13px; flex: 1; min-width: 0; }
+  .card-counter { flex-shrink: 0; white-space: nowrap; }
+  .card-counter strong { font-size: 26px; }
+
+  /* ===== 챗봇 — 모바일은 아이콘만 ===== */
+  .chatbot { bottom: 16px; right: 16px; gap: 10px; }
+  .chatbot__toggle { padding: 14px; font-size: 20px; border-radius: 50%; width: 56px; height: 56px; justify-content: center; }
+  .chatbot__toggle-label { display: none; }
+
+  /* ===== 섹션 패딩 축소 ===== */
+  .products { padding: 70px 0; }
+  .steps-section { padding: 70px 0; }
+  .features { padding: 70px 0; }
+
+  /* ===== Hero — 모바일 사이즈 다운 ===== */
+  .hero { padding: 80px 20px 60px; }
+  .hero__orb { width: 100px; height: 100px; margin-bottom: 24px; }
+  .hero__orb-emoji { font-size: 56px; }
+  .hero__orb-ring--1 { width: 110px; height: 110px; }
+  .hero__orb-ring--2 { width: 140px; height: 140px; }
+  .hero__orb-ring--3 { width: 170px; height: 170px; }
+  .hero__sub { font-size: 15px; margin-bottom: 32px; line-height: 1.6; }
+  .hero__badge { font-size: 11px; padding: 8px 14px; margin-bottom: 24px; }
+  .hero__stat-num { font-size: 24px; }
+  .hero__stat-label { font-size: 11px; }
+
+  /* ===== Reading / Result 컨테이너 — 챗봇 공간 확보 ===== */
+  .reading-container { padding: 32px 18px 110px; }
+  .result-container { padding: 32px 18px 110px; }
+  .reading-page { padding-top: 70px; }
+  .result-page { padding-top: 70px; }
+
+  /* Product header bar 모바일 */
+  .product-header-bar { padding: 14px 18px; margin-bottom: 24px; }
+  .product-header-bar__name { font-size: 17px; }
+  .product-header-bar__price { font-size: 22px; }
+
+  /* Progress bar 컴팩트 */
+  .progress-bar { margin-bottom: 40px; }
+  .progress-step__dot { width: 34px; height: 34px; font-size: 13px; }
+
+  /* Step panel 헤더 */
+  .step-panel h2 { font-size: 22px; }
+  .step-panel > p { font-size: 14px; margin-bottom: 24px; }
+
+  /* 카드 덱 — 모바일은 더 작게 */
+  .card-deck { grid-template-columns: repeat(auto-fill, minmax(54px, 1fr)); gap: 8px; }
+
+  /* 상품 카드 패딩 */
+  .pcard { padding: 28px 24px; }
+  .pcard h3 { font-size: 19px; }
+
+  /* Nav logo */
+  .nav__logo-sub { font-size: 13px; }
+
+  /* ===== 결과 카드 — 모바일 가로 스와이프 ===== */
+  .result-cards-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding: 4px 4px 12px;
+    margin-left: -18px;
+    margin-right: -18px;
+    padding-left: 18px;
+    padding-right: 18px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .result-tarot-card {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    min-width: 140px;
+  }
+  .result-header { padding: 36px 22px; }
+  .result-header h1 { font-size: 24px; }
+  .result-header .big-orb { font-size: 56px; }
+}
+
+/* ===== 매우 좁은 화면 (≤ 400px) — 2x3 + 더 컴팩트 ===== */
+@media (max-width: 400px) {
+  .steps { grid-template-columns: repeat(2, 1fr); }
+  .step:nth-child(9) { grid-column: 1 / -1; max-width: 220px; }
+  .hero__title { font-size: 30px; }
+  .hero__sub { font-size: 14px; }
+  .pcard { padding: 22px 18px; }
+  .pcard h3 { font-size: 17px; }
+  .pcard__price { font-size: 22px; }
+  .features__grid { grid-template-columns: 1fr; }
+  .feature { padding: 28px 20px; }
 }
