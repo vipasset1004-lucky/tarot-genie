@@ -1127,8 +1127,11 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 @media (max-width: 640px) {
   .reading-section__card-img,
-  .reading-section__card-placeholder { width: 170px; }
-  .reading-section__card-meta { font-size: 12px; }
+  .reading-section__card-placeholder {
+    width: min(280px, 75vw);
+  }
+  .reading-section__card-img-wrap { margin: 20px auto 28px; }
+  .reading-section__card-meta { font-size: 13px; }
 }
 
 /* Placeholder for cards without image yet */
