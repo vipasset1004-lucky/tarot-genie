@@ -811,7 +811,8 @@ ${cardList}
 ${sectionGuide}`;
 
   const model     = MODEL_BY_PRODUCT[productKey] || '~anthropic/claude-sonnet-latest';
-  const maxTokens = PREMIUM_PRODUCTS.has(productKey) ? 6000 : 4096;
+  // 시스템 프롬프트가 길어져서(9000+토큰) 응답이 잘리지 않도록 max_tokens 증가
+  const maxTokens = PREMIUM_PRODUCTS.has(productKey) ? 8000 : 6000;
 
   try {
     const completion = await client.chat.completions.create({
@@ -830,16 +831,52 @@ ${sectionGuide}`;
       const fenceMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
       if (fenceMatch) text = fenceMatch[1];
 
-      // 2단계: 앞뒤 공백/잡문 제거 후 가장 바깥 { ... } 추출
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
-      const candidate = (jsonMatch ? jsonMatch[0] : text).trim();
-      const parsed    = JSON.parse(candidate);
-      reading = parsed.sections || parsed;
+      // 2단계: 앞뒤 잡문 제거 — { 부터 시작하게
+      const startIdx = text.indexOf('{');
+      if (startIdx > 0) text = text.slice(startIdx);
 
-      // 3단계: sections이 배열이 아니면 fallback
-      if (!Array.isArray(reading)) throw new Error('sections is not array');
+      // 3단계: 정상 파싱 시도
+      let parsed;
+      try {
+        parsed = JSON.parse(text.trim());
+      } catch (firstErr) {
+        // 4단계: 응답이 중간에 잘렸을 수 있음 — 마지막 완전한 } 까지 잘라 재시도
+        const lastBrace = text.lastIndexOf('}');
+        if (lastBrace > 0) {
+          try {
+            parsed = JSON.parse(text.slice(0, lastBrace + 1));
+          } catch (secondErr) {
+            // 5단계: sections 배열이라도 살려보기 (잘린 응답에서 정상 섹션만)
+            const sectionsMatch = text.match(/"sections"\s*:\s*\[([\s\S]+)/);
+            if (sectionsMatch) {
+              const arrayContent = sectionsMatch[1];
+              // 마지막 완전한 객체 } 까지 추출
+              let depth = 0, completeEnd = -1;
+              for (let i = 0; i < arrayContent.length; i++) {
+                if (arrayContent[i] === '{') depth++;
+                else if (arrayContent[i] === '}') {
+                  depth--;
+                  if (depth === 0) completeEnd = i + 1;
+                }
+              }
+              if (completeEnd > 0) {
+                const sectionsJson = '[' + arrayContent.slice(0, completeEnd) + ']';
+                parsed = { sections: JSON.parse(sectionsJson) };
+              } else throw secondErr;
+            } else throw secondErr;
+          }
+        } else throw firstErr;
+      }
+
+      reading = parsed.sections || parsed;
+      if (!Array.isArray(reading) || reading.length === 0) {
+        throw new Error('sections is not array or empty');
+      }
     } catch (e) {
-      console.error('JSON parse failed:', e.message, '— raw text:', text.slice(0, 300));
+      console.error('JSON parse failed:', e.message,
+        '| text length:', text.length,
+        '| text head:', text.slice(0, 200),
+        '| text tail:', text.slice(-200));
       reading = [{ title: '📖 리딩 결과', paragraphs: [text] }];
     }
 
