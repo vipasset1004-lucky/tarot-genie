@@ -952,6 +952,14 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   outline: none;
 }
 
+.form-hint {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 0.2px;
+  opacity: 0.85;
+}
+
 /* ===== Question Examples ===== */
 .question-examples {
   display: flex;
