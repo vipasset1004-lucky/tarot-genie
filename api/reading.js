@@ -151,15 +151,16 @@ const PRODUCT_DESCRIPTIONS = {
   saju:          '사주의 기운과 타로를 결합한 심층 통합 분석 리딩'
 };
 
-// 상품별 모델
+// 상품별 모델 — 모두 Sonnet (Opus는 응답 속도 너무 느려 timeout 위험)
+// 프리미엄 차별화는 max_tokens(응답 길이)로 — 시스템 프롬프트 압축으로 깊이는 Sonnet도 충분
 const MODEL_BY_PRODUCT = {
   daily:         '~anthropic/claude-sonnet-latest',
   curious:       '~anthropic/claude-sonnet-latest',
   three:         '~anthropic/claude-sonnet-latest',
   yearly:        '~anthropic/claude-sonnet-latest',
-  comprehensive: 'anthropic/claude-opus-4.7',
-  celtic:        'anthropic/claude-opus-4.7',
-  saju:          'anthropic/claude-opus-4.7'
+  comprehensive: '~anthropic/claude-sonnet-latest',
+  celtic:        '~anthropic/claude-sonnet-latest',
+  saju:          '~anthropic/claude-sonnet-latest'
 };
 const PREMIUM_PRODUCTS = new Set(['celtic', 'saju']);
 
@@ -214,11 +215,9 @@ ${cardList}
 ${sectionGuide}`;
 
   const model = MODEL_BY_PRODUCT[productKey] || '~anthropic/claude-sonnet-latest';
-  // max_tokens: 압축된 시스템 프롬프트(~3500토큰) + 짧은 응답 형식 기반
-  // 카드당 ~400토큰 응답 + 기본 1500 + 여유
-  const isPremium = PREMIUM_PRODUCTS.has(productKey);
-  const cap = isPremium ? 10000 : 7000;
-  const maxTokens = Math.min(cap, 1500 + cardCount * 600 + 500);
+  // max_tokens: Sonnet 한도 8192. 카드당 ~400토큰 + 기본 1500 + 여유
+  // 5장 컴프리/10장 켈틱은 cap 도달 — 응답 길이 풍부
+  const maxTokens = Math.min(8000, 1500 + cardCount * 550 + 500);
 
   try {
     const completion = await client.chat.completions.create({
