@@ -171,12 +171,10 @@ function goToStep1() { setStep(1); }
 function goToStep2() {
   const name  = document.getElementById('userName')?.value.trim();
   const birth = getBirthValue();
-  const email = document.getElementById('userEmail')?.value.trim();
   const q     = document.getElementById('userQuestion')?.value.trim();
-  if (!name || !birth || !email || !q) {
+  if (!name || !birth || !q) {
     showFieldError('모든 필수 항목(*)을 입력해주세요.'); return;
   }
-  if (!email.includes('@')) { showFieldError('올바른 이메일을 입력해주세요.'); return; }
   setStep(2);
 }
 
