@@ -135,12 +135,38 @@ function getBirthValue() {
   return (y && m && d) ? `${y}-${m}-${d}` : '';
 }
 
+/* ===== Random helpers ===== */
+// crypto.getRandomValues — 암호학적 무작위 (통계 편향 0)
+function secureRandomInt(maxExclusive) {
+  // rejection sampling으로 modulo bias 제거
+  const max = 0xFFFFFFFF;
+  const limit = max - (max % maxExclusive);
+  const buf = new Uint32Array(1);
+  do { crypto.getRandomValues(buf); } while (buf[0] >= limit);
+  return buf[0] % maxExclusive;
+}
+function secureRandomFloat() {
+  const buf = new Uint32Array(1);
+  crypto.getRandomValues(buf);
+  return buf[0] / 0x100000000;
+}
+
+// Fisher-Yates 셔플 — 78! 가지 순서가 균등 확률
+function shuffleDeck(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = secureRandomInt(i + 1);
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 /* ===== Build Card Deck ===== */
 function buildDeck() {
   const deck = document.getElementById('cardDeck');
   deck.innerHTML = '';
-  // Shuffle
-  const shuffled = [...TAROT_CARDS].sort(() => Math.random() - 0.5);
+  // Fisher-Yates shuffle with crypto-grade randomness
+  const shuffled = shuffleDeck(TAROT_CARDS);
   shuffled.forEach(card => {
     const el = document.createElement('div');
     el.className = 'deck-card';
@@ -161,7 +187,7 @@ function toggleCard(el, card) {
       const first = selectedCards.shift();
       document.querySelector(`.deck-card[data-id="${first.id}"]`)?.classList.remove('selected');
     }
-    selectedCards.push({ ...card, isReversed: Math.random() < 0.3 });
+    selectedCards.push({ ...card, isReversed: secureRandomFloat() < 0.3 });
     el.classList.add('selected');
     // Sparkle effect
     sparkle(el);
