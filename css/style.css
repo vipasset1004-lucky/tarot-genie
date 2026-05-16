@@ -1281,6 +1281,70 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   color: var(--text-muted);
   line-height: 1.6;
 }
+
+/* 이메일 받기 (선택) */
+.email-capture {
+  margin: 20px auto 24px;
+  max-width: 480px;
+  padding: 20px;
+  background: linear-gradient(160deg, rgba(124,58,237,0.10), rgba(168,85,247,0.05));
+  border: 1px solid rgba(168,85,247,0.28);
+  border-radius: 14px;
+  text-align: center;
+}
+.email-capture__title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.email-capture__sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+.email-capture__form { display: flex; gap: 8px; }
+.email-capture__input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  background: rgba(14,12,35,0.8);
+  border: 1px solid rgba(120,80,220,0.3);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 16px; /* iOS 자동 줌 방지 */
+  font-family: inherit;
+}
+.email-capture__input:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
+  outline: none;
+}
+.email-capture__btn {
+  padding: 12px 20px;
+  background: linear-gradient(135deg, var(--purple), var(--purple-mid));
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.email-capture__btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(124,58,237,0.4);
+}
+.email-capture__msg {
+  margin-top: 10px;
+  font-size: 12px;
+  min-height: 16px;
+  color: var(--text-muted);
+}
+.email-capture__msg--ok { color: #4ade80; }
+.email-capture__msg--err { color: #fca5a5; }
+.email-capture--done .email-capture__form { display: none; }
 .loading h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.4px; }
 .loading p { color: var(--text-muted); }
 .loading__dots { display: flex; gap: 8px; justify-content: center; }
