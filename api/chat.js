@@ -1,6 +1,6 @@
-import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
 
-const client = new Anthropic({
+const client = new OpenAI({
   apiKey:  process.env.OPENROUTER_API_KEY,
   baseURL: 'https://openrouter.ai/api/v1'
 });
@@ -27,14 +27,16 @@ export default async function handler(req, res) {
 - 이모지를 적절히 사용해 따뜻한 분위기를 만듭니다`;
 
   try {
-    const msg = await client.messages.create({
+    const completion = await client.chat.completions.create({
       model: '~anthropic/claude-haiku-latest',
       max_tokens: 300,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: message }]
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user',   content: message       }
+      ]
     });
 
-    return res.status(200).json({ reply: msg.content[0].text });
+    return res.status(200).json({ reply: completion.choices[0].message.content });
   } catch (err) {
     console.error('Chat API error:', err);
     return res.status(500).json({ error: 'Chat failed' });

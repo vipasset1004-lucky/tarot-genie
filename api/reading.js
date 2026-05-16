@@ -1,6 +1,6 @@
-import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
 
-const client = new Anthropic({
+const client = new OpenAI({
   apiKey:  process.env.OPENROUTER_API_KEY,
   baseURL: 'https://openrouter.ai/api/v1'
 });
@@ -492,24 +492,20 @@ ${cardList}
 【구성 지침】
 ${sectionGuide}`;
 
-  const model     = MODEL_BY_PRODUCT[productKey] || 'claude-sonnet-4-6';
+  const model     = MODEL_BY_PRODUCT[productKey] || '~anthropic/claude-sonnet-latest';
   const maxTokens = PREMIUM_PRODUCTS.has(productKey) ? 6000 : 4096;
 
   try {
-    const message = await client.messages.create({
+    const completion = await client.chat.completions.create({
       model,
       max_tokens: maxTokens,
-      system: [
-        {
-          type: 'text',
-          text: SYSTEM_PROMPT,
-          cache_control: { type: 'ephemeral' }
-        }
-      ],
-      messages: [{ role: 'user', content: userMessage }]
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'user',   content: userMessage  }
+      ]
     });
 
-    const text = message.content[0].text;
+    const text = completion.choices[0].message.content;
     let reading;
     try {
       const jsonMatch = text.match(/\{[\s\S]*\}/);
