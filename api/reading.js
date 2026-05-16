@@ -810,9 +810,13 @@ ${cardList}
 【구성 지침】
 ${sectionGuide}`;
 
-  const model     = MODEL_BY_PRODUCT[productKey] || '~anthropic/claude-sonnet-latest';
-  // 시스템 프롬프트가 길어져서(9000+토큰) 응답이 잘리지 않도록 max_tokens 증가
-  const maxTokens = PREMIUM_PRODUCTS.has(productKey) ? 8000 : 6000;
+  const model = MODEL_BY_PRODUCT[productKey] || '~anthropic/claude-sonnet-latest';
+  // max_tokens 카드 수 비례 계산 (시스템 프롬프트 9000+토큰 환경)
+  // 응답 구성: 기본(핵심+종합) 2500 + 카드당 800(5항목 분석) + 여유 1000
+  // Sonnet 한도 8192, Opus 16000+ 까지 가능
+  const isPremium = PREMIUM_PRODUCTS.has(productKey);
+  const cap = isPremium ? 12000 : 8000;
+  const maxTokens = Math.min(cap, 2500 + cardCount * 900 + 1000);
 
   try {
     const completion = await client.chat.completions.create({

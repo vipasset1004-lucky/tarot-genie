@@ -1,4 +1,9 @@
 {
+  "functions": {
+    "api/reading.js":    { "maxDuration": 60 },
+    "api/chat.js":       { "maxDuration": 30 },
+    "api/save-email.js": { "maxDuration": 10 }
+  },
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" }
   ],
