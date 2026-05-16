@@ -153,15 +153,16 @@ const PRODUCT_DESCRIPTIONS = {
 
 // 상품별 모델 — Vercel Hobby 60초 timeout 안에 끝내려면
 // Sonnet 한국어 ~40 tok/s, Haiku ~150 tok/s.
-// 4~10장 카드는 응답 토큰이 커서 Sonnet으로 60초 초과 → 5장 이상은 Haiku.
-// 시스템 프롬프트 v4.0 압축으로 Haiku에서도 통찰 깊이 유지.
+// 5장(comprehensive)은 응답 압축(카드 메시지 짧게)으로 Sonnet 60초 안에 가능.
+// 10장(celtic/saju)은 응답 토큰 너무 커서 Sonnet 불가 → Haiku.
+// 가격 정합성: 24,900원 종합 = Sonnet (비싼 상품 = 좋은 모델).
 const MODEL_BY_PRODUCT = {
   daily:         '~anthropic/claude-sonnet-latest',   // 1장 — 빠름
   curious:       '~anthropic/claude-sonnet-latest',   // 3장 — 마진 OK
   three:         '~anthropic/claude-sonnet-latest',   // 3장
   yearly:        '~anthropic/claude-sonnet-latest',   // 3장
-  comprehensive: '~anthropic/claude-haiku-latest',    // 5장 — 속도 필수
-  celtic:        '~anthropic/claude-haiku-latest',    // 10장
+  comprehensive: '~anthropic/claude-sonnet-latest',   // 5장 — 응답 압축으로 60초 가능
+  celtic:        '~anthropic/claude-haiku-latest',    // 10장 — Sonnet으로는 timeout
   saju:          '~anthropic/claude-haiku-latest'     // 10장
 };
 const PREMIUM_PRODUCTS = new Set(['celtic', 'saju']);
@@ -193,11 +194,21 @@ export default async function handler(req, res) {
     ? '이 카드가 들려주는 이야기'
     : `${cardCountKo} 장의 카드가 들려주는 이야기`;
 
+  // 5장 이상은 응답 압축 — Sonnet으로 60초 안에 끝내기 위해
+  // (1~3장은 풍부하게, 5장 이상은 핵심만 단단하게)
+  const compress = cardCount >= 5;
+  const cardMsgGuide = compress
+    ? '메시지 2문장(80~110자, 핵심 통찰만 담아 단단하게)'
+    : '메시지 3~4문장 (비유 활용, 일상 언어)';
+  const overviewGuide = compress
+    ? '핵심 흐름 2문장 + 조심신호/조언 각 1문장 + P.L.A.N 각 한 줄'
+    : '핵심 흐름 2~3문장 + 조심신호/조언 + P.L.A.N (각 한 줄)';
+
   const sectionGuide = `⚠️ 이번 리딩 카드 수: ${cardCount}장. 정확히 ${cardCount + 2}개 섹션 구성:
-1. "🔮 핵심 메시지" — 한 줄 결론 + 근거 (짧고 임팩트)
-2~${cardCount + 1}. "▸ 카드 N. [이름] ([정/역])" — 카드 기운 1줄 + ○○님과의 호응 1~2줄 + 메시지 3~4문장
-${cardCount + 2}. "🎯 종합 통찰 & 실행 전략" — 첫 문단 제목 반드시 "**${overviewLabel}**"로 시작 + 조심신호/조언 + P.L.A.N (각 한 줄)
-'세 카드' '3장' 같은 고정 표현 금지 — ${cardCount}장에 맞춰 표현.`;
+1. "🔮 핵심 메시지" — 한 줄 결론 + 근거 (짧고 임팩트, ${compress ? '2문장' : '2~3문장'})
+2~${cardCount + 1}. "▸ 카드 N. [이름] ([정/역])" — 카드 기운 1줄 + ○○님과의 호응 1문장 + ${cardMsgGuide}
+${cardCount + 2}. "🎯 종합 통찰 & 실행 전략" — 첫 문단 제목 반드시 "**${overviewLabel}**"로 시작 + ${overviewGuide}
+'세 카드' '3장' 같은 고정 표현 금지 — ${cardCount}장에 맞춰 표현.${compress ? '\n⚠️ 핵심 압축 모드: 길이보다 깊이. 군더더기 표현 금지, 한 문장에 통찰 한 개씩 단단하게.' : ''}`;
 
   const userMessage = `【의뢰인 정보】
 이름: ${userName || '익명'}
@@ -217,9 +228,14 @@ ${cardList}
 ${sectionGuide}`;
 
   const model = MODEL_BY_PRODUCT[productKey] || '~anthropic/claude-sonnet-latest';
-  // max_tokens: Sonnet 한도 8192. 카드당 ~400토큰 + 기본 1500 + 여유
-  // 5장 컴프리/10장 켈틱은 cap 도달 — 응답 길이 풍부
-  const maxTokens = Math.min(8000, 1500 + cardCount * 550 + 500);
+  // max_tokens: 모델 + 카드 수 기반 동적 산출
+  // Sonnet ~40 tok/s → 60초 cap에서 ~2400토큰 한계, 안전마진 두고 2300
+  // Haiku ~150 tok/s → 8000토큰까지 여유
+  // 5장 Sonnet은 시스템 압축 지시 + max_tokens cap으로 60초 안에 끝남
+  const isHaiku = model.includes('haiku');
+  const maxTokens = isHaiku
+    ? Math.min(8000, 1500 + cardCount * 550 + 500)   // 10장 Haiku 7500
+    : Math.min(2300, 900 + cardCount * 280 + 300);   // 5장 Sonnet 2300 (cap)
 
   try {
     const completion = await client.chat.completions.create({
