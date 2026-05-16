@@ -82,8 +82,12 @@ function renderResult(ctx, sections) {
   ctx.selectedCards.forEach((card, i) => {
     const el = document.createElement('div');
     el.className = 'result-tarot-card';
+    const imgHtml = card.image
+      ? `<div class="result-tarot-card__img-wrap"><img class="result-tarot-card__img${card.isReversed ? ' reversed' : ''}" src="${card.image}" alt="${card.name}" loading="lazy"></div>`
+      : `<div class="result-tarot-card__placeholder"><span>✦</span></div>`;
     el.innerHTML = `
       <div class="result-tarot-card__pos">${positions[i] || `카드 ${i+1}`}</div>
+      ${imgHtml}
       <div class="result-tarot-card__name">${card.name}</div>
       <div class="result-tarot-card__dir">${card.isReversed ? '역방향 🔄' : '정방향 ↑'}</div>
     `;

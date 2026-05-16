@@ -88,6 +88,87 @@ const TAROT_CARDS = [
   { id:77, name:'펜타클 왕',     nameEn:'King of Pentacles', arcana:'pentacles', upright:'부, 사업, 리더십, 보안', reversed:'완고함, 물질주의, 실패' }
 ];
 
+// ──────────────────────────────────────────────
+// 카드 이미지 매핑 (id → 파일명)
+// 없는 카드(소드 King, 펜타클 14장)는 자동으로 보라 뒷면 표시
+// ──────────────────────────────────────────────
+const CARD_IMAGES = {
+  // Major Arcana (0~21)
+  0:  '00-fool.jpg',
+  1:  '01-magician.jpg',
+  2:  '02-high-priestess.jpg',
+  3:  '03-empress.jpg',
+  4:  '04-emperor.jpg',
+  5:  '05-hierophant.jpg',
+  6:  '06-lovers.jpg',
+  7:  '07-chariot.jpg',
+  8:  '08-strength.jpg',
+  9:  '09-hermit.jpg',
+  10: '10-wheel-of-fortune.jpg',
+  11: '11-justice.jpg',
+  12: '12-hanged-man.jpg',
+  13: '13-death.jpg',
+  14: '14-temperance.jpg',
+  15: '15-devil.jpg',
+  16: '16-tower.jpg',
+  17: '17-star.jpg',
+  18: '18-moon.jpg',
+  19: '19-sun.jpg',
+  20: '20-judgement.jpg',
+  21: '21-world.jpg',
+  // Wands (22~35)
+  22: 'wands-01-ace.jpg',
+  23: 'wands-02.jpg',
+  24: 'wands-03.jpg',
+  25: 'wands-04.jpg',
+  26: 'wands-05.jpg',
+  27: 'wands-06.jpg',
+  28: 'wands-07.jpg',
+  29: 'wands-08.jpg',
+  30: 'wands-09.jpg',
+  31: 'wands-10.jpg',
+  32: 'wands-11-page.jpg',
+  33: 'wands-12-knight.jpg',
+  34: 'wands-13-queen.jpg',
+  35: 'wands-14-king.jpg',
+  // Cups (36~49)
+  36: 'cups-01-ace.jpg',
+  37: 'cups-02.jpg',
+  38: 'cups-03.jpg',
+  39: 'cups-04.jpg',
+  40: 'cups-05.jpg',
+  41: 'cups-06.jpg',
+  42: 'cups-07.jpg',
+  43: 'cups-08.jpg',
+  44: 'cups-09.jpg',
+  45: 'cups-10.jpg',
+  46: 'cups-11-page.jpg',
+  47: 'cups-12-knight.jpg',
+  48: 'cups-13-queen.jpg',
+  49: 'cups-14-king.jpg',
+  // Swords (50~63) — id 63 (King) TBD
+  50: 'swords-01-ace.jpg',
+  51: 'swords-02.jpg',
+  52: 'swords-03.jpg',
+  53: 'swords-04.jpg',
+  54: 'swords-05.jpg',
+  55: 'swords-06.jpg',
+  56: 'swords-07.jpg',
+  57: 'swords-08.jpg',
+  58: 'swords-09.jpg',
+  59: 'swords-10.jpg',
+  60: 'swords-11-page.jpg',
+  61: 'swords-12-knight.jpg',
+  62: 'swords-13-queen.jpg'
+  // 63: 'swords-14-king.jpg' — TBD
+  // 64~77: Pentacles 14장 — TBD
+};
+
+TAROT_CARDS.forEach(c => {
+  const f = CARD_IMAGES[c.id];
+  c.image = f ? `img/cards/${f}` : null;
+});
+
 // Spread positions by product type
 const SPREAD_POSITIONS = {
   daily:         ['오늘의 메시지'],
