@@ -924,6 +924,34 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .form-group textarea::placeholder { color: var(--text-muted); }
 .form-group select option { background: #0e0d22; }
 
+/* Birth date — Year / Month / Day selects */
+.birth-selects {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 8px;
+}
+.birth-selects select {
+  background: rgba(14,12,35,0.8);
+  border: 1px solid rgba(120,80,220,0.2);
+  border-radius: var(--radius-sm);
+  padding: 14px 12px;
+  color: var(--text);
+  font-size: 16px;
+  font-family: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%), linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+  background-position: calc(100% - 16px) center, calc(100% - 11px) center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 28px;
+}
+.birth-selects select:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
+  outline: none;
+}
+
 /* ===== Question Examples ===== */
 .question-examples {
   display: flex;

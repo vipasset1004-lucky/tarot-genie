@@ -13,9 +13,66 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('productPrice').textContent =
     Number(product.price).toLocaleString('ko-KR') + '원';
 
+  buildBirthSelects();
   buildDeck();
   updateCounter();
 });
+
+/* ===== Birth Date Selects (Year / Month / Day) ===== */
+function buildBirthSelects() {
+  const yearEl  = document.getElementById('userBirthYear');
+  const monthEl = document.getElementById('userBirthMonth');
+  const dayEl   = document.getElementById('userBirthDay');
+  if (!yearEl || !monthEl || !dayEl) return;
+
+  const now = new Date();
+  const thisYear = now.getFullYear();
+  // 년도: 100년 전 ~ 올해
+  for (let y = thisYear; y >= thisYear - 100; y--) {
+    const o = document.createElement('option');
+    o.value = y; o.textContent = y + '년';
+    yearEl.appendChild(o);
+  }
+  // 월: 1~12
+  for (let m = 1; m <= 12; m++) {
+    const o = document.createElement('option');
+    o.value = String(m).padStart(2, '0');
+    o.textContent = m + '월';
+    monthEl.appendChild(o);
+  }
+  // 일: 처음엔 31일. 년/월 선택 시 실제 일수로 재생성
+  fillDays(31);
+
+  // 월 또는 년 선택 시 일수 재계산 (윤년/짧은달 처리)
+  const updateDays = () => {
+    const y = parseInt(yearEl.value);
+    const m = parseInt(monthEl.value);
+    const days = (y && m) ? new Date(y, m, 0).getDate() : 31;
+    const prev = dayEl.value;
+    fillDays(days);
+    if (prev && parseInt(prev) <= days) dayEl.value = prev;
+  };
+  yearEl.addEventListener('change', updateDays);
+  monthEl.addEventListener('change', updateDays);
+
+  function fillDays(n) {
+    dayEl.innerHTML = '<option value="">일</option>';
+    for (let d = 1; d <= n; d++) {
+      const o = document.createElement('option');
+      o.value = String(d).padStart(2, '0');
+      o.textContent = d + '일';
+      dayEl.appendChild(o);
+    }
+  }
+}
+
+/* 년/월/일 → "YYYY-MM-DD" 조합 (없으면 빈 문자열) */
+function getBirthValue() {
+  const y = document.getElementById('userBirthYear')?.value;
+  const m = document.getElementById('userBirthMonth')?.value;
+  const d = document.getElementById('userBirthDay')?.value;
+  return (y && m && d) ? `${y}-${m}-${d}` : '';
+}
 
 /* ===== Build Card Deck ===== */
 function buildDeck() {
@@ -113,7 +170,7 @@ function goToStep1() { setStep(1); }
 
 function goToStep2() {
   const name  = document.getElementById('userName')?.value.trim();
-  const birth = document.getElementById('userBirth')?.value;
+  const birth = getBirthValue();
   const email = document.getElementById('userEmail')?.value.trim();
   const q     = document.getElementById('userQuestion')?.value.trim();
   if (!name || !birth || !email || !q) {
@@ -130,7 +187,7 @@ function goToResult() {
     product,
     selectedCards,
     userName:     document.getElementById('userName')?.value.trim(),
-    userBirth:    document.getElementById('userBirth')?.value,
+    userBirth:    getBirthValue(),
     userEmail:    document.getElementById('userEmail')?.value.trim(),
     userGender:   document.getElementById('userGender')?.value,
     userQuestion: document.getElementById('userQuestion')?.value.trim(),
