@@ -1120,6 +1120,151 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   40%          { transform: translateY(-14px); opacity: 1; }
 }
 
+/* ===== Product Groups (Standard / Premium) ===== */
+.products__group {
+  margin-top: 56px;
+}
+.products__group:first-of-type { margin-top: 32px; }
+
+.products__group-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 36px;
+  padding: 0 8px;
+}
+.products__group-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.35), transparent);
+}
+.products__group-line--gold {
+  background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.45), rgba(251, 191, 36, 0.6), rgba(245, 158, 11, 0.45), transparent);
+  height: 1.5px;
+}
+.products__group-title-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+.products__group-icon {
+  font-size: 22px;
+  filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.5));
+}
+.products__group--premium .products__group-icon {
+  filter: drop-shadow(0 0 16px rgba(245, 158, 11, 0.6));
+}
+.products__group-title {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: var(--text);
+  margin: 0;
+}
+.products__group-header--premium .products__group-title {
+  background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--gold));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+  letter-spacing: 2px;
+}
+.products__group-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.6px;
+  font-weight: 500;
+}
+.products__group-sub--gold {
+  color: rgba(245, 158, 11, 0.75);
+}
+
+/* Premium grid — subtle gold backdrop */
+.products__group--premium .products__grid {
+  position: relative;
+}
+.products__group--premium .products__grid::before {
+  content: '';
+  position: absolute;
+  inset: -40px -20px;
+  background: radial-gradient(ellipse at center, rgba(245, 158, 11, 0.04), transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ===== Premium Card — Gold Glow + Border ===== */
+.pcard--premium {
+  background: linear-gradient(160deg, rgba(35, 25, 10, 0.85), rgba(20, 14, 30, 0.95));
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  box-shadow:
+    0 0 0 1px rgba(245, 158, 11, 0.08),
+    0 12px 40px rgba(0, 0, 0, 0.45),
+    0 0 60px rgba(245, 158, 11, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+.pcard--premium::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.5), transparent 40%, transparent 60%, rgba(251, 191, 36, 0.4));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.8;
+}
+.pcard--premium:hover {
+  border-color: rgba(251, 191, 36, 0.55);
+  box-shadow:
+    0 0 0 1px rgba(251, 191, 36, 0.2),
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 80px rgba(245, 158, 11, 0.18);
+  transform: translateY(-8px);
+}
+.pcard--premium .pcard__icon {
+  filter: drop-shadow(0 0 18px rgba(245, 158, 11, 0.45));
+}
+.pcard--premium .pcard__price {
+  background: linear-gradient(135deg, var(--gold-light), #fbbf24, var(--gold));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+  filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.3));
+}
+.pcard--premium .pcard__btn {
+  background: linear-gradient(135deg, #b8860b, var(--gold), #b8860b);
+  color: #1a0f00;
+  font-weight: 800;
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
+}
+.pcard--premium:hover .pcard__btn {
+  box-shadow: 0 6px 24px rgba(245, 158, 11, 0.5);
+  transform: translateY(-1px);
+}
+
+.pcard__premium-tag {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: rgba(251, 191, 36, 0.85);
+  padding: 4px 9px;
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 4px;
+  z-index: 2;
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 960px) {
   .products__grid { grid-template-columns: repeat(2, 1fr); }
