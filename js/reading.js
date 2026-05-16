@@ -262,6 +262,9 @@ function goToStep2() {
   if (!name || !birth || !q) {
     showFieldError('모든 필수 항목(*)을 입력해주세요.'); return;
   }
+  // 집중 안내에 사용자 질문 다시 보여주기 (의례적 효과)
+  const focusEl = document.getElementById('focusQuestion');
+  if (focusEl) focusEl.textContent = `"${q}"`;
   setStep(2);
 }
 
