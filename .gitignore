@@ -4,3 +4,7 @@ node_modules/
 .vercel/
 
 *.zip
+
+# 원본 카드 이미지 작업 폴더 (정리된 파일만 repo에 포함)
+img/cards/추가*/
+img/cards/asset_*.png

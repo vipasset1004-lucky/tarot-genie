@@ -90,7 +90,7 @@ const TAROT_CARDS = [
 
 // ──────────────────────────────────────────────
 // 카드 이미지 매핑 (id → 파일명)
-// 없는 카드(소드 King, 펜타클 14장)는 자동으로 보라 뒷면 표시
+// 78장 전체 적용 완료 (메이저 22 + 완드 14 + 컵 14 + 소드 14 + 펜타클 14)
 // ──────────────────────────────────────────────
 const CARD_IMAGES = {
   // Major Arcana (0~21)
@@ -146,7 +146,7 @@ const CARD_IMAGES = {
   47: 'cups-12-knight.jpg',
   48: 'cups-13-queen.jpg',
   49: 'cups-14-king.jpg',
-  // Swords (50~63) — id 63 (King) TBD
+  // Swords (50~63)
   50: 'swords-01-ace.jpg',
   51: 'swords-02.jpg',
   52: 'swords-03.jpg',
@@ -159,9 +159,23 @@ const CARD_IMAGES = {
   59: 'swords-10.jpg',
   60: 'swords-11-page.jpg',
   61: 'swords-12-knight.jpg',
-  62: 'swords-13-queen.jpg'
-  // 63: 'swords-14-king.jpg' — TBD
-  // 64~77: Pentacles 14장 — TBD
+  62: 'swords-13-queen.jpg',
+  63: 'swords-14-king.png',
+  // Pentacles (64~77)
+  64: 'pentacles-01-ace.png',
+  65: 'pentacles-02.png',
+  66: 'pentacles-03.png',
+  67: 'pentacles-04.png',
+  68: 'pentacles-05.png',
+  69: 'pentacles-06.png',
+  70: 'pentacles-07.png',
+  71: 'pentacles-08.png',
+  72: 'pentacles-09.png',
+  73: 'pentacles-10.png',
+  74: 'pentacles-11-page.png',
+  75: 'pentacles-12-knight.png',
+  76: 'pentacles-13-queen.png',
+  77: 'pentacles-14-king.png'
 };
 
 TAROT_CARDS.forEach(c => {
