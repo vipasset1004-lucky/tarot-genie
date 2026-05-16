@@ -25,8 +25,13 @@
   <div class="loading">
     <div class="loading__orb">🔮</div>
     <h3>카드를 해석하고 있습니다</h3>
-    <p>당신만을 위한 리딩을 준비하고 있어요...</p>
+    <p class="loading__sub">당신만을 위한 리딩을 준비하고 있어요...</p>
     <div class="loading__dots"><span></span><span></span><span></span></div>
+    <div class="loading__notice">
+      ⏱ <strong>30초 ~ 1분</strong> 정도 걸려요<br>
+      <span class="loading__warn">📱 다른 앱으로 이동하지 말고 화면을 켜두세요</span>
+      <small>결과는 자동 저장되어 다시 접속하면 볼 수 있어요</small>
+    </div>
   </div>
 </div>
 
@@ -135,10 +140,40 @@ function showError(msg) {
   document.getElementById('errorMsg').textContent = msg;
 }
 
+// localStorage 캐싱 (다른 앱 갔다 와도 같은 결과 복원)
+const LAST_KEY = 'tarot_last_reading';
+const MAX_AGE_MS = 24 * 60 * 60 * 1000; // 24시간
+
+function saveLastReading(ctx, reading) {
+  try {
+    localStorage.setItem(LAST_KEY, JSON.stringify({ ctx, reading, ts: Date.now() }));
+  } catch (e) { /* quota exceeded 등 무시 */ }
+}
+
+function loadLastReading() {
+  try {
+    const raw = localStorage.getItem(LAST_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    if (Date.now() - data.ts > MAX_AGE_MS) {
+      localStorage.removeItem(LAST_KEY);
+      return null;
+    }
+    return data;
+  } catch { return null; }
+}
+
 // Init
 window.addEventListener('DOMContentLoaded', async () => {
   const raw = sessionStorage.getItem('tarot_reading_ctx');
+
+  // sessionStorage에 진행 중인 리딩 정보 없으면 → 마지막 캐시된 결과 복원
   if (!raw) {
+    const cached = loadLastReading();
+    if (cached) {
+      renderResult(cached.ctx, cached.reading);
+      return;
+    }
     showError('리딩 정보를 찾을 수 없습니다. 처음부터 다시 시작해주세요.');
     return;
   }
@@ -166,6 +201,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     const data = await res.json();
     sessionStorage.removeItem('tarot_reading_ctx');
+    saveLastReading(ctx, data.reading); // 다음 접속 시 복원용 캐싱
     renderResult(ctx, data.reading);
   } catch (err) {
     console.error('Reading API error:', err);

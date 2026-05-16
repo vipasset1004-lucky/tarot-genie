@@ -1231,6 +1231,34 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   text-align: center;
 }
 .loading__orb { font-size: 72px; animation: orbFloat 3s ease-in-out infinite; filter: drop-shadow(0 0 24px rgba(139,92,246,0.7)); }
+.loading__sub { color: var(--text-muted); font-size: 14px; margin-bottom: 18px; }
+.loading__notice {
+  margin-top: 28px;
+  padding: 16px 18px;
+  background: rgba(245, 158, 11, 0.06);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.8;
+  color: rgba(225, 225, 240, 0.85);
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.loading__notice strong { color: var(--gold-light); }
+.loading__warn {
+  display: inline-block;
+  margin-top: 6px;
+  font-weight: 700;
+  color: var(--gold-light);
+}
+.loading__notice small {
+  display: block;
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
 .loading h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.4px; }
 .loading p { color: var(--text-muted); }
 .loading__dots { display: flex; gap: 8px; justify-content: center; }
