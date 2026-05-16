@@ -1321,7 +1321,17 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   .btn--hero { font-size: 16px; padding: 17px 40px; }
   .fcard--2, .fcard--4, .fcard--6 { display: none; }
   .form-grid { grid-template-columns: 1fr; }
-  .chatbot__window { width: calc(100vw - 32px); right: 0; }
+  .chatbot__window {
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    bottom: 90px;
+    width: auto;
+    max-height: min(480px, calc(100vh - 120px));
+  }
+  .chatbot__input-wrap { padding: 12px 14px; gap: 8px; }
+  .chatbot__input { padding: 10px 16px; font-size: 14px; min-width: 0; }
+  .chatbot__send { width: 40px; height: 40px; font-size: 17px; }
   .hero__stats { gap: 24px; }
   .reading-content { padding: 28px 22px; }
   .progress-step__label { font-size: 10px; }
