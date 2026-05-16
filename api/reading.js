@@ -229,13 +229,13 @@ ${sectionGuide}`;
 
   const model = MODEL_BY_PRODUCT[productKey] || '~anthropic/claude-sonnet-latest';
   // max_tokens: 모델 + 카드 수 기반 동적 산출
-  // Sonnet ~40 tok/s → 60초 cap에서 ~2400토큰 한계, 안전마진 두고 2300
+  // Sonnet 실측 ~56 tok/s → 60초 cap에서 ~3000토큰 안전 (55초 여유)
   // Haiku ~150 tok/s → 8000토큰까지 여유
-  // 5장 Sonnet은 시스템 압축 지시 + max_tokens cap으로 60초 안에 끝남
+  // 5장 Sonnet 종합섹션까지 다 들어가게 cap 3000
   const isHaiku = model.includes('haiku');
   const maxTokens = isHaiku
     ? Math.min(8000, 1500 + cardCount * 550 + 500)   // 10장 Haiku 7500
-    : Math.min(2300, 900 + cardCount * 280 + 300);   // 5장 Sonnet 2300 (cap)
+    : Math.min(3000, 900 + cardCount * 380 + 400);   // 5장 Sonnet 3000 (cap)
 
   try {
     const completion = await client.chat.completions.create({
