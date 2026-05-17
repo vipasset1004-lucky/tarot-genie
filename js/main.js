@@ -109,27 +109,49 @@ window.addEventListener('scroll', () => {
 
 /* ===== Hero Stats Counter ===== */
 (function() {
-  const els = document.querySelectorAll('[data-count]');
-  if (!els.length) return;
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (!e.isIntersecting) return;
-      obs.unobserve(e.target);
-      const target = parseInt(e.target.dataset.count);
-      const suffix = e.target.dataset.suffix || '';
-      const duration = 1800;
-      const start = performance.now();
-      (function tick(now) {
-        const progress = Math.min((now - start) / duration, 1);
-        const ease = 1 - Math.pow(1 - progress, 3);
-        const value = Math.floor(ease * target);
-        e.target.textContent = value.toLocaleString('ko-KR') + suffix;
-        if (progress < 1) requestAnimationFrame(tick);
-        else e.target.textContent = target.toLocaleString('ko-KR') + suffix;
-      })(start);
-    });
-  }, { threshold: 0.5 });
-  els.forEach(el => obs.observe(el));
+  function countUp(el, target, suffix) {
+    suffix = suffix || el.dataset.suffix || '';
+    const duration = 1800;
+    const start = performance.now();
+    (function tick(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      const value = Math.floor(ease * target);
+      el.textContent = value.toLocaleString('ko-KR') + suffix;
+      if (progress < 1) requestAnimationFrame(tick);
+      else el.textContent = target.toLocaleString('ko-KR') + suffix;
+    })(start);
+  }
+
+  // 정적 통계 — viewport 진입 시 카운트업
+  const staticEls = document.querySelectorAll('[data-count]');
+  if (staticEls.length) {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        obs.unobserve(e.target);
+        countUp(e.target, parseInt(e.target.dataset.count));
+      });
+    }, { threshold: 0.5 });
+    staticEls.forEach(el => obs.observe(el));
+  }
+
+  // 누적 리딩 수 — Upstash Redis 카운터 + 베이스 100 (실 호출마다 +1)
+  const readingEl = document.getElementById('readingCountNum');
+  if (readingEl) {
+    fetch('/api/reading-count')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data && typeof data.count === 'number') {
+          // 화면에 보이면 카운트업, 아직 안 보이면 바로 텍스트만 갱신
+          const rect = readingEl.getBoundingClientRect();
+          const visible = rect.top < window.innerHeight && rect.bottom > 0;
+          if (visible) countUp(readingEl, data.count);
+          else readingEl.textContent = data.count.toLocaleString('ko-KR');
+        }
+      })
+      .catch(() => { /* baseline 100 그대로 유지 */ });
+  }
 })();
 
 /* ===== 3D Card Tilt ===== */

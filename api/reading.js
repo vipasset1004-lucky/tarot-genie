@@ -1,9 +1,14 @@
 import OpenAI from 'openai';
+import { Redis } from '@upstash/redis';
 
 const client = new OpenAI({
   apiKey:  process.env.OPENROUTER_API_KEY,
   baseURL: 'https://openrouter.ai/api/v1'
 });
+
+const redis = (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)
+  ? Redis.fromEnv()
+  : null;
 
 // ──────────────────────────────────────────────
 // SYSTEM PROMPT v4.0 — 압축 + 깊이 (길이보다 핵심 통찰)
@@ -300,6 +305,12 @@ ${sectionGuide}`;
         '| text head:', text.slice(0, 200),
         '| text tail:', text.slice(-200));
       reading = [{ title: '📖 리딩 결과', paragraphs: [text] }];
+    }
+
+    // 누적 카운터 +1 (실패해도 리딩 응답에는 영향 X)
+    if (redis) {
+      try { await redis.incr('reading_count'); }
+      catch (e) { console.error('counter incr failed (non-fatal):', e.message); }
     }
 
     return res.status(200).json({ reading });
