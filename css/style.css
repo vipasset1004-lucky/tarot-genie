@@ -1914,6 +1914,34 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 /* 리딩 본문 강조 (인쇄에서 덮어쓰기 가능하도록 클래스로) */
 .reading-highlight { color: var(--gold-light); }
 
+/* PLUS 상품 뱃지 (메인 상품 카드, Clarifier 가능 상품에만) */
+.pcard__plus {
+  margin: 10px 0 4px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.14), rgba(245, 158, 11, 0.06));
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--gold-light, #fbbf24);
+  text-align: center;
+  letter-spacing: -0.2px;
+  line-height: 1.4;
+}
+.pcard__plus strong {
+  font-weight: 900;
+  color: var(--gold, #f59e0b);
+  letter-spacing: 0.3px;
+  margin: 0 2px;
+}
+.pcard__plus small {
+  display: inline-block;
+  margin-left: 4px;
+  font-size: 10.5px;
+  font-weight: 500;
+  opacity: 0.75;
+}
+
 /* ===== Clarifier 박스 (추가 질문 + 카드 1장) ===== */
 .clarifier-box {
   position: relative;

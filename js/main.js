@@ -223,6 +223,19 @@ function makeBubble(text, type) {
 
 function scrollChat(el) { el.scrollTop = el.scrollHeight; }
 
+/* ===== PLUS 상품 뱃지 (Clarifier 가능 = 1/3/5장) ===== */
+(function() {
+  const PLUS_PRODUCTS = ['daily', 'curious', 'three', 'yearly', 'comprehensive'];
+  document.querySelectorAll('.pcard').forEach(card => {
+    if (!PLUS_PRODUCTS.includes(card.dataset.product)) return;
+    const plus = document.createElement('div');
+    plus.className = 'pcard__plus';
+    plus.innerHTML = '✨ <strong>PLUS</strong> 추가 질문 1회 <small>(베타 무료)</small>';
+    const tag = card.querySelector('.pcard__tag');
+    if (tag) tag.insertAdjacentElement('afterend', plus);
+  });
+})();
+
 /* ===== Navigation ===== */
 function goToReading(btn) {
   const card = btn.closest('[data-product]');
