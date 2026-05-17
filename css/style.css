@@ -1552,69 +1552,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   line-height: 1.6;
 }
 
-/* 이메일 받기 (선택) */
-.email-capture {
-  margin: 20px auto 24px;
-  max-width: 480px;
-  padding: 20px;
-  background: linear-gradient(160deg, rgba(124,58,237,0.10), rgba(168,85,247,0.05));
-  border: 1px solid rgba(168,85,247,0.28);
-  border-radius: 14px;
-  text-align: center;
-}
-.email-capture__title {
-  font-size: 15px;
-  font-weight: 800;
-  color: var(--text);
-  margin-bottom: 6px;
-}
-.email-capture__sub {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-bottom: 14px;
-  line-height: 1.5;
-}
-.email-capture__form { display: flex; gap: 8px; }
-.email-capture__input {
-  flex: 1;
-  min-width: 0;
-  padding: 12px 14px;
-  background: rgba(14,12,35,0.8);
-  border: 1px solid rgba(120,80,220,0.3);
-  border-radius: 10px;
-  color: var(--text);
-  font-size: 16px; /* iOS 자동 줌 방지 */
-  font-family: inherit;
-}
-.email-capture__input:focus {
-  border-color: var(--purple);
-  box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
-  outline: none;
-}
-.email-capture__btn {
-  padding: 12px 20px;
-  background: linear-gradient(135deg, var(--purple), var(--purple-mid));
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-weight: 700;
-  font-size: 14px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-.email-capture__btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(124,58,237,0.4);
-}
-.email-capture__msg {
-  margin-top: 10px;
-  font-size: 12px;
-  min-height: 16px;
-  color: var(--text-muted);
-}
-.email-capture__msg--ok { color: #4ade80; }
-.email-capture__msg--err { color: #fca5a5; }
-.email-capture--done .email-capture__form { display: none; }
 .loading h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.4px; }
 .loading p { color: var(--text-muted); }
 .loading__dots { display: flex; gap: 8px; justify-content: center; }
@@ -1925,4 +1862,174 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   .pcard__price { font-size: 22px; }
   .features__grid { grid-template-columns: 1fr; }
   .feature { padding: 28px 20px; }
+}
+
+/* ===== save-tip 강화 (PDF 저장 안내) ===== */
+.save-tip__title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--gold-light);
+  margin-bottom: 8px;
+  letter-spacing: -0.2px;
+}
+.save-tip__body {
+  margin-bottom: 12px;
+  color: rgba(225, 225, 240, 0.9);
+}
+.save-tip__list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.save-tip__list li {
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(168, 85, 247, 0.18);
+  border-radius: 8px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: rgba(225, 225, 240, 0.88);
+}
+.save-tip__btn {
+  width: 100%;
+  margin-top: 4px;
+  font-size: 15px;
+  padding: 14px 20px;
+}
+.save-tip__alt {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(168, 85, 247, 0.18);
+}
+.save-tip__alt small {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* 리딩 본문 강조 (인쇄에서 덮어쓰기 가능하도록 클래스로) */
+.reading-highlight { color: var(--gold-light); }
+
+/* ===== 인쇄 / PDF 저장 ===== */
+@media print {
+  /* 색 보존 (브라우저별 키) */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    animation: none !important;
+    transition: none !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+
+  /* 다크 → 라이트 변환 */
+  html, body, body.result-page {
+    background: #ffffff !important;
+    color: #1a1a1a !important;
+    padding-top: 0 !important;
+  }
+
+  /* 숨길 요소 */
+  .nav,
+  .footer,
+  #loadingState,
+  #errorState,
+  .email-capture,
+  .save-tip,
+  .result-actions {
+    display: none !important;
+  }
+
+  /* 컨테이너 — 인쇄 영역 풀 사용 */
+  .result-container {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* 헤더 — 큰 구슬 이모지·subtitle은 유지하되 잉크 절약 */
+  .result-header {
+    padding: 0 0 16px !important;
+    text-align: center;
+    border-bottom: 2px solid #8b6914 !important;
+    margin-bottom: 18px !important;
+  }
+  .result-header .big-orb { display: none !important; }
+  .result-header h1,
+  .result-header h1 span,
+  .result-header p {
+    color: #1a1a1a !important;
+  }
+  .result-header h1 { font-size: 20px !important; margin-bottom: 6px !important; }
+  .result-header p  { font-size: 12px !important; color: #555 !important; }
+
+  /* 카드 가로 행 */
+  .result-cards-row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    overflow: visible !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    justify-content: center;
+    margin-bottom: 22px !important;
+  }
+  .result-tarot-card {
+    background: #fff !important;
+    border: 1px solid #cbb37a !important;
+    border-radius: 6px !important;
+    padding: 8px !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    min-width: 120px !important;
+    max-width: 140px !important;
+  }
+  .result-tarot-card__pos { color: #666 !important; font-size: 9px !important; }
+  .result-tarot-card__name { color: #8b6914 !important; font-size: 12px !important; }
+  .result-tarot-card__dir { color: #555 !important; font-size: 10px !important; }
+  .result-tarot-card__img { box-shadow: none !important; }
+
+  /* 리딩 본문 */
+  .reading-content { padding: 0 !important; }
+  .reading-section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 18px !important;
+    padding-bottom: 14px !important;
+    border-bottom: 1px solid #ddd !important;
+  }
+  .reading-section h3 {
+    color: #8b6914 !important;
+    font-size: 15px !important;
+    margin-bottom: 8px !important;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+  .reading-section p {
+    color: #1a1a1a !important;
+    font-size: 12px !important;
+    line-height: 1.65 !important;
+    margin-bottom: 6px !important;
+  }
+  .reading-highlight { color: #8b6914 !important; font-weight: 700; }
+
+  /* 본문 안의 카드 썸네일 */
+  .reading-section__card-img-wrap {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin: 10px auto 14px !important;
+  }
+  .reading-section__card-img { box-shadow: none !important; }
+  .reading-section__card-meta { color: #555 !important; font-size: 11px !important; }
+
+  /* 페이지 여백 */
+  @page {
+    margin: 14mm 12mm;
+  }
 }

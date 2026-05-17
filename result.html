@@ -48,23 +48,21 @@
   <div class="reading-content" id="readingContent"></div>
 
   <div class="save-tip">
-    📷 결과를 보관하시려면 <strong>화면 캡처(스크린샷)</strong>로 저장해주세요<br>
-    <small>iPhone: 측면 버튼 + 음량 ↑ 동시 누르기 · Android: 전원 + 음량 ↓ 동시 누르기</small>
-  </div>
-
-  <!-- 이메일 받기 (선택) -->
-  <div class="email-capture" id="emailCapture">
-    <div class="email-capture__title">📧 이메일로도 받고 싶으세요?</div>
-    <div class="email-capture__sub">남겨주시면 이메일 발송 기능이 준비되는 대로 보내드려요</div>
-    <form class="email-capture__form" onsubmit="event.preventDefault(); submitEmail();">
-      <input type="email" id="captureEmail" class="email-capture__input" placeholder="your@email.com" required>
-      <button type="submit" class="email-capture__btn">받기</button>
-    </form>
-    <div id="emailCaptureMsg" class="email-capture__msg"></div>
+    <div class="save-tip__title">📄 결과를 PDF로 저장하세요</div>
+    <div class="save-tip__body">
+      아래 버튼을 누르면 인쇄 다이얼로그가 열려요. <strong>프린터 / 대상</strong>에서 <strong>"PDF로 저장"</strong>을 선택하시면 됩니다.
+    </div>
+    <ul class="save-tip__list">
+      <li><strong>📱 모바일</strong> — 상단 "프린터" 영역 탭 → <strong>PDF로 저장</strong> → 다운로드 → 카톡으로 공유</li>
+      <li><strong>💻 PC</strong> — 대상에서 <strong>PDF로 저장</strong> (Chrome / Edge) 또는 <strong>Microsoft Print to PDF</strong> 선택</li>
+    </ul>
+    <button class="btn btn--primary save-tip__btn" onclick="window.print()">📄 PDF로 저장 / 인쇄</button>
+    <div class="save-tip__alt">
+      <small>📷 캡처가 편하면 — iPhone: 측면 버튼 + 음량 ↑ · Android: 전원 + 음량 ↓</small>
+    </div>
   </div>
 
   <div class="result-actions">
-    <button class="btn btn--primary" onclick="window.print()">🖨️ 인쇄하기</button>
     <a href="index.html" class="btn btn--outline">다시 리딩받기</a>
   </div>
 </div>
@@ -148,45 +146,12 @@ function renderResult(ctx, sections) {
     }
 
     const paragraphsHtml = (sec.paragraphs || []).map(p =>
-      `<p>${p.replace(/\*\*(.*?)\*\*/g, '<strong style="color:var(--gold-light)">$1</strong>')}</p>`
+      `<p>${p.replace(/\*\*(.*?)\*\*/g, '<strong class="reading-highlight">$1</strong>')}</p>`
     ).join('');
 
     div.innerHTML = `<h3>${sec.title}</h3>${cardImgHtml}${paragraphsHtml}`;
     content.appendChild(div);
   });
-}
-
-async function submitEmail() {
-  const input = document.getElementById('captureEmail');
-  const msg   = document.getElementById('emailCaptureMsg');
-  const email = (input.value || '').trim();
-  if (!email || !email.includes('@')) {
-    msg.textContent = '올바른 이메일 형식을 입력해주세요';
-    msg.className = 'email-capture__msg email-capture__msg--err';
-    return;
-  }
-  const cached = (() => { try { return JSON.parse(localStorage.getItem('tarot_last_reading') || 'null'); } catch { return null; } })();
-  try {
-    msg.textContent = '저장 중...';
-    msg.className = 'email-capture__msg';
-    const r = await fetch('/api/save-email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email,
-        userName:  cached?.ctx?.userName  || '',
-        product:   cached?.ctx?.product?.name || '',
-        timestamp: new Date().toISOString()
-      })
-    });
-    if (!r.ok) throw new Error('서버 오류');
-    msg.textContent = '✅ 등록 완료! 발송 기능이 준비되면 보내드릴게요';
-    msg.className = 'email-capture__msg email-capture__msg--ok';
-    document.getElementById('emailCapture').classList.add('email-capture--done');
-  } catch (e) {
-    msg.textContent = '잠시 후 다시 시도해주세요';
-    msg.className = 'email-capture__msg email-capture__msg--err';
-  }
 }
 
 function showError(msg) {
