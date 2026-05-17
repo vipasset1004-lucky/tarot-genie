@@ -1914,6 +1914,98 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 /* 리딩 본문 강조 (인쇄에서 덮어쓰기 가능하도록 클래스로) */
 .reading-highlight { color: var(--gold-light); }
 
+/* ===== Clarifier 박스 (추가 질문 + 카드 1장) ===== */
+.clarifier-box {
+  position: relative;
+  margin: 28px auto 20px;
+  max-width: 520px;
+  padding: 22px 22px 20px;
+  background: linear-gradient(160deg, rgba(168,85,247,0.10), rgba(124,58,237,0.05));
+  border: 1px solid rgba(168, 85, 247, 0.30);
+  border-radius: 14px;
+  text-align: center;
+}
+.clarifier-box__badge {
+  position: absolute;
+  top: -10px; right: 16px;
+  padding: 4px 10px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light, #fbbf24));
+  color: #1a0e2a;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+}
+.clarifier-box__title {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--gold-light);
+  margin-bottom: 6px;
+  letter-spacing: -0.3px;
+}
+.clarifier-box__sub {
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(225, 225, 240, 0.85);
+  margin-bottom: 16px;
+}
+.clarifier-box__sub strong { color: var(--gold-light); }
+.clarifier-box__input {
+  width: 100%;
+  padding: 12px 14px;
+  background: rgba(14, 12, 35, 0.7);
+  border: 1px solid rgba(168, 85, 247, 0.30);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 1.55;
+  resize: vertical;
+  min-height: 70px;
+  box-sizing: border-box;
+}
+.clarifier-box__input:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.18);
+  outline: none;
+}
+.clarifier-box__counter {
+  margin-top: 4px;
+  text-align: right;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.clarifier-box__btn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 14px 20px;
+  font-size: 15px;
+}
+.clarifier-box__btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+.clarifier-box__msg {
+  margin-top: 10px;
+  font-size: 12px;
+  min-height: 16px;
+  color: var(--text-muted);
+}
+.clarifier-box__msg--err { color: #fca5a5; }
+
+/* 보충 결과 섹션 — 본문 끝에 자연스럽게 강조 */
+.reading-section--clarifier {
+  margin-top: 30px;
+  padding-top: 30px;
+  border-top: 2px dashed rgba(168, 85, 247, 0.30);
+  border-bottom: none;
+}
+.reading-section--clarifier h3 {
+  color: var(--gold-light);
+}
+
 /* ===== 인쇄 / PDF 저장 ===== */
 @media print {
   /* 색 보존 (브라우저별 키) */
@@ -1942,8 +2034,15 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   #errorState,
   .email-capture,
   .save-tip,
+  .clarifier-box,
   .result-actions {
     display: none !important;
+  }
+
+  /* 보충 섹션은 인쇄에서도 강조 흐트러지지 않게 */
+  .reading-section--clarifier {
+    border-top: 2px dashed #8b6914 !important;
+    page-break-before: auto;
   }
 
   /* 컨테이너 — 인쇄 영역 풀 사용 */
