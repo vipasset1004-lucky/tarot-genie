@@ -2105,28 +2105,34 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   color: var(--gold-light);
 }
 
-/* ===== 인쇄 / PDF 저장 ===== */
+/* ===== 인쇄 / PDF 저장 — Universal nuclear reset ===== */
 @media print {
-  /* 색 보존 (브라우저별 키) */
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    color-adjust: exact !important;
-    animation: none !important;
-    transition: none !important;
+  /* 모든 요소의 배경 그라데이션·색·그림자·애니메이션 강제 제거 + 텍스트 검정 */
+  *, *::before, *::after {
+    background-image: none !important;
+    background-color: transparent !important;
+    background: transparent !important;
+    color: #1a1a1a !important;
     text-shadow: none !important;
     box-shadow: none !important;
     filter: none !important;
+    animation: none !important;
+    transition: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
 
-  /* 다크 → 라이트 변환 */
+  /* body만 흰 배경 */
   html, body, body.result-page {
     background: #ffffff !important;
+    background-color: #ffffff !important;
     color: #1a1a1a !important;
-    padding-top: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
-  /* 숨길 요소 */
+  /* 숨길 요소 — 빈 페이지 방지 위해 명확히 제거 */
   .nav,
   .footer,
   #loadingState,
@@ -2134,38 +2140,40 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   .email-capture,
   .save-tip,
   .clarifier-box,
-  .result-actions {
+  .result-actions,
+  .chatbot,
+  #chatbotWindow,
+  #chatbotToggle {
     display: none !important;
   }
 
-  /* 보충 섹션은 인쇄에서도 강조 흐트러지지 않게 */
-  .reading-section--clarifier {
-    border-top: 2px dashed #8b6914 !important;
-    page-break-before: auto;
-  }
-
-  /* 컨테이너 — 인쇄 영역 풀 사용 */
+  /* 컨테이너 — 풀 사용 */
   .result-container {
     max-width: 100% !important;
     padding: 0 !important;
     margin: 0 !important;
   }
 
-  /* 헤더 — 큰 구슬 이모지·subtitle은 유지하되 잉크 절약 */
+  /* 헤더 — 골드 underline만 */
   .result-header {
-    padding: 0 0 16px !important;
-    text-align: center;
+    text-align: center !important;
+    padding: 0 0 14px !important;
+    margin: 0 0 18px !important;
     border-bottom: 2px solid #8b6914 !important;
-    margin-bottom: 18px !important;
   }
   .result-header .big-orb { display: none !important; }
-  .result-header h1,
-  .result-header h1 span,
-  .result-header p {
+  .result-header h1 {
+    font-size: 22px !important;
     color: #1a1a1a !important;
+    margin: 0 0 6px !important;
+    font-weight: 800 !important;
   }
-  .result-header h1 { font-size: 20px !important; margin-bottom: 6px !important; }
-  .result-header p  { font-size: 12px !important; color: #555 !important; }
+  .result-header h1 span { color: #8b6914 !important; }
+  .result-header p {
+    font-size: 13px !important;
+    color: #555 !important;
+    margin: 0 !important;
+  }
 
   /* 카드 가로 행 */
   .result-cards-row {
@@ -2173,58 +2181,82 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
     flex-wrap: wrap !important;
     gap: 10px !important;
     overflow: visible !important;
+    justify-content: center !important;
+    margin: 0 0 22px !important;
+    padding: 0 !important;
     page-break-inside: avoid;
     break-inside: avoid;
-    justify-content: center;
-    margin-bottom: 22px !important;
   }
   .result-tarot-card {
-    background: #fff !important;
     border: 1px solid #cbb37a !important;
     border-radius: 6px !important;
     padding: 8px !important;
+    min-width: 120px !important;
+    max-width: 150px !important;
     page-break-inside: avoid;
     break-inside: avoid;
-    min-width: 120px !important;
-    max-width: 140px !important;
   }
-  .result-tarot-card__pos { color: #666 !important; font-size: 9px !important; }
-  .result-tarot-card__name { color: #8b6914 !important; font-size: 12px !important; }
-  .result-tarot-card__dir { color: #555 !important; font-size: 10px !important; }
-  .result-tarot-card__img { box-shadow: none !important; }
+  .result-tarot-card__pos { color: #666 !important; font-size: 10px !important; }
+  .result-tarot-card__name { color: #8b6914 !important; font-size: 13px !important; font-weight: 800 !important; }
+  .result-tarot-card__dir { color: #555 !important; font-size: 11px !important; }
+
+  /* 카드 이미지 — 자체 픽셀이라 transparent 배경 통과해도 원본 유지됨 */
+  .result-tarot-card__img,
+  .reading-section__card-img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
 
   /* 리딩 본문 */
-  .reading-content { padding: 0 !important; }
+  .reading-content { padding: 0 !important; margin: 0 !important; }
   .reading-section {
+    margin: 0 0 16px !important;
+    padding: 0 0 14px !important;
+    border-bottom: 1px solid #ddd !important;
     page-break-inside: avoid;
     break-inside: avoid;
-    margin-bottom: 18px !important;
-    padding-bottom: 14px !important;
-    border-bottom: 1px solid #ddd !important;
   }
   .reading-section h3 {
     color: #8b6914 !important;
-    font-size: 15px !important;
-    margin-bottom: 8px !important;
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    margin: 0 0 10px !important;
     page-break-after: avoid;
     break-after: avoid;
   }
   .reading-section p {
     color: #1a1a1a !important;
-    font-size: 12px !important;
-    line-height: 1.65 !important;
-    margin-bottom: 6px !important;
+    font-size: 13.5px !important;
+    line-height: 1.75 !important;
+    margin: 0 0 8px !important;
   }
-  .reading-highlight { color: #8b6914 !important; font-weight: 700; }
+  .reading-section strong,
+  .reading-highlight {
+    color: #8b6914 !important;
+    font-weight: 700 !important;
+  }
 
   /* 본문 안의 카드 썸네일 */
   .reading-section__card-img-wrap {
+    text-align: center !important;
+    margin: 12px auto 14px !important;
     page-break-inside: avoid;
     break-inside: avoid;
-    margin: 10px auto 14px !important;
   }
-  .reading-section__card-img { box-shadow: none !important; }
-  .reading-section__card-meta { color: #555 !important; font-size: 11px !important; }
+  .reading-section__card-meta {
+    color: #555 !important;
+    font-size: 12px !important;
+    margin-top: 6px !important;
+  }
+
+  /* 보충 섹션 — 점선으로 구분 */
+  .reading-section--clarifier {
+    border-top: 2px dashed #8b6914 !important;
+    border-bottom: none !important;
+    margin-top: 22px !important;
+    padding-top: 16px !important;
+  }
+  .reading-section--clarifier h3 { color: #8b6914 !important; }
 
   /* 페이지 여백 */
   @page {
