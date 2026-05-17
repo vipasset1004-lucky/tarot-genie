@@ -1987,6 +1987,105 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   cursor: not-allowed;
   transform: none;
 }
+
+/* 카드 뽑기 방식 선택 — 두 버튼 행 */
+.clarifier-box__choice-label {
+  margin: 16px 0 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 0.3px;
+}
+.clarifier-box__choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.clarifier-box__choice {
+  padding: 14px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: center;
+}
+.clarifier-box__choice small {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  opacity: 0.75;
+}
+.clarifier-box__back {
+  margin-top: 14px;
+  padding: 10px 18px;
+  font-size: 13px;
+}
+.clarifier-box__loading {
+  padding: 26px 18px;
+  text-align: center;
+}
+
+/* 카드 부채꼴 — 7장 뒷면 펼침 */
+.clarifier-fan {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 4px;
+  margin: 20px auto 8px;
+  min-height: 160px;
+  perspective: 800px;
+}
+.clarifier-fan__card {
+  width: 64px;
+  height: 96px;
+  margin: 0 -8px;  /* 살짝 겹침 */
+  padding: 0;
+  background: linear-gradient(135deg, #2d1b69 0%, #4c1d95 50%, #1e0b3e 100%);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: 50% 100%;
+  transform: rotate(var(--r, 0deg)) translateY(var(--ty, 0));
+  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+  position: relative;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), inset 0 0 0 3px rgba(245, 158, 11, 0.15);
+}
+.clarifier-fan__card::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(245, 158, 11, 0.30);
+  border-radius: 4px;
+  pointer-events: none;
+}
+.clarifier-fan__back {
+  font-size: 22px;
+  color: var(--gold-light, #fbbf24);
+  text-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
+}
+.clarifier-fan__card:hover:not([disabled]) {
+  transform: rotate(var(--r, 0deg)) translateY(calc(var(--ty, 0px) - 14px));
+  box-shadow: 0 10px 24px rgba(124, 58, 237, 0.5), inset 0 0 0 3px rgba(245, 158, 11, 0.4);
+}
+.clarifier-fan.picked .clarifier-fan__card {
+  cursor: default;
+  opacity: 0.35;
+  pointer-events: none;
+}
+.clarifier-fan.picked .clarifier-fan__card.selected {
+  opacity: 1;
+  transform: rotate(var(--r, 0deg)) translateY(calc(var(--ty, 0px) - 24px)) scale(1.1);
+  box-shadow: 0 16px 32px rgba(245, 158, 11, 0.55), inset 0 0 0 3px rgba(245, 158, 11, 0.7);
+  z-index: 2;
+}
+
+@media (max-width: 480px) {
+  .clarifier-fan__card { width: 54px; height: 80px; margin: 0 -10px; }
+  .clarifier-fan { min-height: 140px; }
+}
 .clarifier-box__msg {
   margin-top: 10px;
   font-size: 12px;
