@@ -3,7 +3,7 @@
 
 import { Redis } from '@upstash/redis';
 
-const BASE = 100;
+const BASE = 121;
 const KEY  = 'reading_count';
 
 // Vercel 공식 Redis는 KV_REST_API_*로, Upstash 직접 통합은 UPSTASH_REDIS_REST_*로 주입
