@@ -6,9 +6,11 @@ import { Redis } from '@upstash/redis';
 const BASE = 100;
 const KEY  = 'reading_count';
 
-const redis = (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)
-  ? Redis.fromEnv()
-  : null;
+// Vercel 공식 Redis는 KV_REST_API_*로, Upstash 직접 통합은 UPSTASH_REDIS_REST_*로 주입
+const hasRedisEnv =
+  (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) ||
+  (process.env.KV_REST_API_URL        && process.env.KV_REST_API_TOKEN);
+const redis = hasRedisEnv ? Redis.fromEnv() : null;
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'public, max-age=30');  // 30초 캐시로 부하 절감

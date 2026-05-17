@@ -6,9 +6,11 @@ const client = new OpenAI({
   baseURL: 'https://openrouter.ai/api/v1'
 });
 
-const redis = (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)
-  ? Redis.fromEnv()
-  : null;
+// Vercel 공식 Redis는 KV_REST_API_*, Upstash 직접 통합은 UPSTASH_REDIS_REST_*
+const hasRedisEnv =
+  (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) ||
+  (process.env.KV_REST_API_URL        && process.env.KV_REST_API_TOKEN);
+const redis = hasRedisEnv ? Redis.fromEnv() : null;
 
 // ──────────────────────────────────────────────
 // SYSTEM PROMPT v4.0 — 압축 + 깊이 (길이보다 핵심 통찰)
